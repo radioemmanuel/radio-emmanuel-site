@@ -24,40 +24,26 @@
 
     <style>
       /* =========================================================
-         ☀️ TEMA DÍA: "CIELO DE MAÑANA" 
-         - Fondo: Degradado amanecer (Celeste -> Blanco)
-         - Tarjetas: Cristal Claro (Glassmorphism)
-         ========================================================= */
+          ☀️ TEMA DÍA: "CIELO DE MAÑANA" 
+          ========================================================= */
       :root {
-        /* Colores Core - Suaves y Celestiales */
         --primary: #0a4f70;
         --primary2: #1e6b91;
-
         --accent: #5ecde0;
         --accent2: #2a9db3;
-
         --gold: #cba864;
         --gold2: #b59850;
-
-        /* Fondo base */
         --bg: #eaf6fa;
-
-        /* Tarjetas "Cristal Claro" */
         --surface: rgba(255, 255, 255, 0.65);
         --card: rgba(255, 255, 255, 0.75);
         --header-bg: rgba(235, 247, 252, 0.85);
-
-        --text: #1a3c4d; /* Azul grisáceo oscuro */
+        --text: #1a3c4d;
         --muted: rgba(26, 60, 77, 0.7);
-
         --stroke: rgba(255, 255, 255, 0.6);
         --stroke2: rgba(255, 255, 255, 0.4);
-
         --radius: 18px;
         --shadow: 0 16px 40px rgba(94, 205, 224, 0.15);
         --shadow2: 0 10px 24px rgba(10, 79, 112, 0.08);
-
-        /* Background: El Cielo */
         --bgFancy:
           radial-gradient(
             800px 800px at 0% 0%,
@@ -65,39 +51,31 @@
             transparent 60%
           ),
           linear-gradient(180deg, #cce4f0 0%, #f3faff 100%);
+
+        /* Estado colores */
+        --status-loading: #f0dca5;
+        --status-live: #5ecde0;
+        --status-error: #ff6b6b;
       }
 
       /* =========================================================
-         🌙 TEMA NOCHE: "CRISTAL DE MEDIANOCHE"
-         - Fondo: Azul profundo espacial
-         - Tarjetas: Cristal Ahumado
-         ========================================================= */
+          🌙 TEMA NOCHE: "CRISTAL DE MEDIANOCHE"
+          ========================================================= */
       [data-theme='dark'] {
-        /* Colores Core - Brillantes en la oscuridad */
-        --primary: #7dd3fc; /* Azul neón suave */
+        --primary: #7dd3fc;
         --primary2: #0ea5e9;
-
-        --gold: #f0dca5; /* Dorado pálido (luz de luna/estrellas) */
+        --gold: #f0dca5;
         --gold2: #d4b873;
-
-        /* Fondo Base: Azul casi negro */
         --bg: #020617;
-
-        /* Tarjetas "Cristal Ahumado" */
         --surface: rgba(15, 23, 42, 0.6);
         --card: rgba(30, 41, 59, 0.6);
         --header-bg: rgba(2, 6, 23, 0.85);
-
-        --text: #f1f5f9; /* Blanco humo */
+        --text: #f1f5f9;
         --muted: rgba(148, 163, 184, 0.65);
-
         --stroke: rgba(255, 255, 255, 0.12);
         --stroke2: rgba(255, 255, 255, 0.06);
-
         --shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
         --shadow2: 0 10px 25px rgba(0, 0, 0, 0.5);
-
-        /* Background: Noche Profunda */
         --bgFancy:
           radial-gradient(
             circle at 50% 0%,
@@ -105,6 +83,10 @@
             transparent 70%
           ),
           linear-gradient(180deg, #0f172a 0%, #020617 100%);
+
+        --status-loading: #d4b873;
+        --status-live: #0ea5e9;
+        --status-error: #ef4444;
       }
 
       * {
@@ -121,7 +103,7 @@
           Arial,
           sans-serif;
         background: var(--bgFancy);
-        background-attachment: fixed; /* Fondo fijo elegante */
+        background-attachment: fixed;
         background-size: cover;
         color: var(--text);
         transition: color 0.3s ease;
@@ -209,8 +191,6 @@
         min-width: 120px;
         justify-content: flex-end;
       }
-
-      /* Theme Toggle Button */
       .theme-toggle {
         background: transparent;
         border: 1px solid var(--stroke);
@@ -227,7 +207,6 @@
       .theme-toggle:hover {
         background: var(--stroke2);
       }
-
       .lang {
         display: flex;
         gap: 8px;
@@ -429,24 +408,91 @@
         color: var(--text);
         font-weight: 900;
         margin: 6px 0 12px;
-      }
-      .progress {
-        height: 10px;
-        border-radius: 999px;
-        background: var(--stroke);
-        overflow: hidden;
-      }
-      .bar {
-        height: 100%;
-        width: 35%;
-        background: linear-gradient(
-          90deg,
-          rgba(102, 191, 242, 0.95),
-          rgba(199, 171, 102, 0.9)
-        );
+        min-height: 1.2em;
       }
 
-      /* Botones alineados (Grid) */
+      /* =========================================
+         BARRA DE ESTADO FUNCIONAL
+         ========================================= */
+      @keyframes stripes {
+        from {
+          background-position: 1rem 0;
+        }
+        to {
+          background-position: 0 0;
+        }
+      }
+      @keyframes fluidLive {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+
+      .progress {
+        height: 12px;
+        border-radius: 999px;
+        background: rgba(0, 0, 0, 0.05);
+        border: 1px solid var(--stroke2);
+        overflow: hidden;
+        position: relative;
+      }
+
+      .bar {
+        height: 100%;
+        width: 100%; /* Ocupa todo, el estilo cambia según estado */
+        border-radius: 999px;
+        transition: all 0.4s ease;
+        transform-origin: left;
+      }
+
+      /* Estados de la barra */
+      .bar.idle {
+        background: var(--muted);
+        opacity: 0.1;
+      }
+
+      .bar.buffering {
+        background-color: var(--status-loading);
+        background-image: linear-gradient(
+          45deg,
+          rgba(255, 255, 255, 0.35) 25%,
+          transparent 25%,
+          transparent 50%,
+          rgba(255, 255, 255, 0.35) 50%,
+          rgba(255, 255, 255, 0.35) 75%,
+          transparent 75%,
+          transparent
+        );
+        background-size: 1rem 1rem;
+        animation: stripes 1s linear infinite;
+        opacity: 1;
+      }
+
+      .bar.live {
+        background: linear-gradient(
+          90deg,
+          var(--primary),
+          var(--accent),
+          var(--gold),
+          var(--primary)
+        );
+        background-size: 300% 300%;
+        animation: fluidLive 4s ease infinite;
+        opacity: 1;
+        box-shadow: 0 0 15px rgba(94, 205, 224, 0.4);
+      }
+
+      .bar.error {
+        background: var(--status-error);
+        opacity: 0.8;
+      }
+
       .playerBtns {
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;
@@ -461,7 +507,6 @@
         white-space: nowrap;
       }
 
-      /* NUEVO: Audio real estilizado */
       .audioWrap {
         margin-top: 10px;
         border: 1px solid var(--stroke2);
@@ -471,6 +516,7 @@
       }
       audio {
         width: 100%;
+        height: 0;
       }
       .volRow {
         display: flex;
@@ -483,7 +529,7 @@
         padding: 0;
       }
 
-      /* Sections */
+      /* Sections & Grid */
       section {
         padding: 18px 0;
       }
@@ -559,7 +605,7 @@
         padding: 12px 12px;
         border-radius: 14px;
         border: 1px solid var(--stroke);
-        background: rgba(255, 255, 255, 0.05); /* Muy traslúcido */
+        background: rgba(255, 255, 255, 0.05);
         color: var(--text);
         outline: none;
       }
@@ -643,7 +689,6 @@
           <button class="theme-toggle" id="themeBtn" aria-label="Toggle Theme">
             ☀️
           </button>
-
           <div class="lang" aria-label="Language switch">
             <div class="pill" id="btnES">ES</div>
             <div class="pill active" id="btnEN">EN</div>
@@ -717,30 +762,21 @@
                 >
               </div>
 
-              <!-- CAMBIO MINIMO: ahora este texto lo actualiza JS -->
               <div class="now" id="nowText" data-i18n="player.now">
                 Reproduciendo: (Transmisión en vivo - Presiona Reproducir)
               </div>
 
               <div class="progress" aria-label="player progress">
-                <div class="bar"></div>
+                <div class="bar idle" id="statusBar"></div>
               </div>
 
-              <!-- NUEVO: audio real -->
               <div class="audioWrap">
                 <audio
                   id="radioAudio"
                   preload="none"
-                  controls
                   playsinline
                   crossorigin="anonymous"
-                >
-                  <source
-                    src="http://uk5freenew.listen2myradio.com:36073/stream"
-                    type="audio/mpeg"
-                  />
-                  Tu navegador no soporta audio HTML5.
-                </audio>
+                ></audio>
 
                 <div class="volRow" aria-label="volume controls">
                   <span style="font-weight: 900; font-size: 12px">🔊</span>
@@ -756,7 +792,6 @@
                 </div>
               </div>
 
-              <!-- CAMBIO MINIMO: botones con id para controlar -->
               <div class="playerBtns">
                 <button class="btn" type="button" id="btnPlay">
                   ▶️ <span data-i18n="player.play">Reproducir</span>
@@ -774,8 +809,20 @@
                 style="margin-top: 12px"
                 data-i18n="player.helper"
               >
-                Cuando elijan la plataforma de transmisión (Zeno.fm / Shoutcast
-                / Icecast), incrustamos aquí el reproductor real.
+                Conectado al servidor Listen2MyRadio (Icecast).
+              </p>
+
+              <p
+                class="mini"
+                id="streamHint"
+                style="
+                  margin-top: 8px;
+                  display: none;
+                  color: var(--status-error);
+                "
+              >
+                Si no reproduce, la radio podría estar apagada o el navegador
+                bloqueó la conexión insegura.
               </p>
             </div>
           </div>
@@ -804,7 +851,6 @@
                   >PRINCIPAL</span
                 >
               </div>
-
               <div class="item">
                 <div>
                   <strong data-i18n="shows.s1.name">Palabra Viva</strong>
@@ -814,7 +860,6 @@
                 </div>
                 <span class="tag" data-i18n="shows.tagLive">EN VIVO</span>
               </div>
-
               <div class="item">
                 <div>
                   <strong data-i18n="shows.s2.name">Noche de Adoración</strong>
@@ -824,7 +869,6 @@
                 </div>
                 <span class="tag" data-i18n="shows.tagMusic">Adoración</span>
               </div>
-
               <div class="item">
                 <div>
                   <strong data-i18n="shows.s3.name">Fe y Familia</strong>
@@ -844,7 +888,6 @@
                 Episodios recientes (datos de ejemplo)
               </p>
             </div>
-
             <div class="list">
               <div class="item">
                 <div>
@@ -880,7 +923,6 @@
                 <span class="tag">▶️</span>
               </div>
             </div>
-
             <p class="mini" style="margin-top: 12px" data-i18n="podcast.helper">
               Después conectamos Spotify, Apple Podcasts o un RSS sencillo e
               incrustamos reproductores por episodio.
@@ -895,7 +937,6 @@
             <h2 data-i18n="prayer.title">Peticiones de oración</h2>
             <p class="hint" data-i18n="prayer.hint">Estamos orando por ti</p>
           </div>
-
           <form
             onsubmit="
               event.preventDefault();
@@ -924,14 +965,12 @@
                 </select>
               </div>
             </div>
-
             <label data-i18n="prayer.msgLabel">Tu petición</label>
             <textarea
               placeholder="Escribe tu petición de oración..."
               required
               data-i18n-placeholder="prayer.msgPlaceholder"
             ></textarea>
-
             <div style="margin-top: 12px">
               <button class="btn gold" type="submit">
                 🙏 <span data-i18n="prayer.send">Enviar</span>
@@ -940,9 +979,8 @@
                 class="mini"
                 style="margin-left: 10px"
                 data-i18n="prayer.note"
+                >Privado y respetuoso.</span
               >
-                Privado y respetuoso.
-              </span>
             </div>
           </form>
         </div>
@@ -952,7 +990,6 @@
             <h2 data-i18n="connect.title">Conecta</h2>
             <p class="hint" data-i18n="connect.hint">Edinburg, Texas</p>
           </div>
-
           <div class="list">
             <div class="item">
               <div>
@@ -980,12 +1017,10 @@
               <span class="tag">🌐</span>
             </div>
           </div>
-
           <p class="mini" style="margin-top: 12px" data-i18n="connect.helper">
             Podemos agregar un botón de “Compartir” para enviar el link del En
             Vivo por WhatsApp al instante.
           </p>
-
           <div style="margin-top: 12px">
             <button class="btn primary" type="button" onclick="shareLive()">
               🔗 <span data-i18n="connect.share">Compartir En Vivo</span>
@@ -1010,7 +1045,6 @@
          =========================== */
       const themeBtn = document.getElementById('themeBtn');
       const htmlEl = document.documentElement;
-
       const savedTheme = localStorage.getItem('theme');
       const systemDark = window.matchMedia(
         '(prefers-color-scheme: dark)',
@@ -1027,7 +1061,6 @@
       themeBtn.addEventListener('click', () => {
         const current = htmlEl.getAttribute('data-theme');
         const newTheme = current === 'dark' ? 'light' : 'dark';
-
         htmlEl.setAttribute('data-theme', newTheme);
         localStorage.setItem('theme', newTheme);
         themeBtn.textContent = newTheme === 'dark' ? '🌙' : '☀️';
@@ -1044,7 +1077,6 @@
           'nav.podcast': 'Podcast',
           'nav.prayer': 'Prayer Requests',
           'nav.connect': 'Connect',
-
           'hero.liveBadge': 'LIVE',
           'hero.kicker': 'Cast the net in faith',
           'hero.title': 'Word and worship, every day.',
@@ -1053,22 +1085,18 @@
           'hero.ctaLive': 'Listen Live',
           'hero.ctaPodcast': 'Go to Podcast',
           'hero.note': 'Brand & logo will be defined soon.',
-
           'player.status': 'LIVE',
           'player.quality': 'Mobile Friendly',
-          'player.now': 'Now Playing: (Press Play)',
+          'player.now': 'Ready to play',
           'player.play': 'Play',
           'player.pause': 'Pause',
           'player.volume': 'Volume',
-          'player.helper':
-            'When you choose your streaming platform (Zeno.fm / Shoutcast / Icecast), we’ll embed the real player here.',
-
+          'player.helper': 'Connected to Listen2MyRadio (Icecast).',
           'shows.title': 'Shows',
           'shows.hint': 'Schedule and hosts (placeholder data)',
           'shows.s0.name': 'God with Us',
           'shows.s0.meta': 'Sunday • 10:00 AM • Pastor Daniel Ortiz',
           'shows.tagMain': 'MAIN',
-
           'shows.s1.name': 'Living Word',
           'shows.s1.meta': 'Monday • 7:00 PM • Pastor Daniel Ortiz',
           'shows.s2.name': 'Worship Night',
@@ -1078,7 +1106,6 @@
           'shows.tagLive': 'LIVE',
           'shows.tagMusic': 'Worship',
           'shows.tagTalk': 'Talk',
-
           'podcast.title': 'Podcast',
           'podcast.hint': 'Latest episodes (placeholder data)',
           'podcast.e1.name': 'Faith in Difficult Times',
@@ -1089,7 +1116,6 @@
           'podcast.e3.meta': 'EN • Jan 2026 • 16 min',
           'podcast.helper':
             'Later we can connect Spotify, Apple Podcasts, or a simple RSS feed and embed players per episode.',
-
           'prayer.title': 'Prayer Requests',
           'prayer.hint': 'We are praying for you',
           'prayer.nameLabel': 'Name',
@@ -1097,10 +1123,8 @@
           'prayer.msgLabel': 'Your request',
           'prayer.send': 'Send',
           'prayer.note': 'Private and respectful.',
-
           'prayer.namePlaceholder': 'Name',
           'prayer.msgPlaceholder': 'Type your prayer request...',
-
           'connect.title': 'Connect',
           'connect.hint': 'Edinburg, Texas',
           'connect.whats': 'WhatsApp',
@@ -1111,11 +1135,9 @@
           'connect.helper':
             'We can add a “Share” button so people can send the Live link on WhatsApp instantly.',
           'connect.share': 'Share Live Link',
-
           'footer.note':
             'Independent brand • Unique design • Bilingual content',
         },
-
         es: {
           'header.subtitle': 'Radio cristiana bilingüe • Edinburg, TX',
           'nav.live': 'En vivo',
@@ -1123,7 +1145,6 @@
           'nav.podcast': 'Podcast',
           'nav.prayer': 'Peticiones',
           'nav.connect': 'Conecta',
-
           'hero.liveBadge': 'EN VIVO',
           'hero.kicker': 'Tira la red con fe',
           'hero.title': 'Palabra y adoración, todos los días.',
@@ -1132,22 +1153,18 @@
           'hero.ctaLive': 'Escuchar en vivo',
           'hero.ctaPodcast': 'Ir al Podcast',
           'hero.note': 'Marca y logo se definirán pronto.',
-
           'player.status': 'EN VIVO',
           'player.quality': 'Compatible móvil',
-          'player.now': 'Reproduciendo: (Presiona Reproducir)',
+          'player.now': 'Listo para reproducir',
           'player.play': 'Reproducir',
           'player.pause': 'Pausar',
           'player.volume': 'Volumen',
-          'player.helper':
-            'Cuando elijan la plataforma de transmisión (Zeno.fm / Shoutcast / Icecast), incrustamos aquí el reproductor real.',
-
+          'player.helper': 'Conectado al servidor Listen2MyRadio (Icecast).',
           'shows.title': 'Programas',
           'shows.hint': 'Horario y responsables (datos de ejemplo)',
           'shows.s0.name': 'Dios con nosotros',
           'shows.s0.meta': 'Domingo • 10:00 AM • Pastor Daniel Ortiz',
           'shows.tagMain': 'PRINCIPAL',
-
           'shows.s1.name': 'Palabra Viva',
           'shows.s1.meta': 'Lunes • 7:00 PM • Pastor Daniel Ortiz',
           'shows.s2.name': 'Noche de Adoración',
@@ -1157,7 +1174,6 @@
           'shows.tagLive': 'EN VIVO',
           'shows.tagMusic': 'Adoración',
           'shows.tagTalk': 'Charlas',
-
           'podcast.title': 'Podcast',
           'podcast.hint': 'Episodios recientes (datos de ejemplo)',
           'podcast.e1.name': 'Fe en tiempos difíciles',
@@ -1168,7 +1184,6 @@
           'podcast.e3.meta': 'EN • Ene 2026 • 16 min',
           'podcast.helper':
             'Después conectamos Spotify, Apple Podcasts o un RSS sencillo e incrustamos reproductores por episodio.',
-
           'prayer.title': 'Peticiones de oración',
           'prayer.hint': 'Estamos orando por ti',
           'prayer.nameLabel': 'Nombre',
@@ -1176,10 +1191,8 @@
           'prayer.msgLabel': 'Tu petición',
           'prayer.send': 'Enviar',
           'prayer.note': 'Privado y respetuoso.',
-
           'prayer.namePlaceholder': 'Nombre',
           'prayer.msgPlaceholder': 'Escribe tu petición de oración...',
-
           'connect.title': 'Conecta',
           'connect.hint': 'Edinburg, Texas',
           'connect.whats': 'WhatsApp',
@@ -1190,79 +1203,50 @@
           'connect.helper':
             'Podemos agregar un botón de “Compartir” para enviar el link del En Vivo por WhatsApp al instante.',
           'connect.share': 'Compartir En Vivo',
-
           'footer.note':
             'Marca independiente • Diseño propio • Contenido bilingüe',
         },
       };
 
       const i18nState = { lang: 'en' };
-
       function setMetaForLang(lang) {
+        const text =
+          lang === 'es'
+            ? 'Somos una radio cristiana bilingüe...'
+            : 'We are a bilingual Christian radio...';
         const desc = document.querySelector('meta[name="description"]');
-        const og = document.querySelector('meta[property="og:description"]');
-
-        const esText =
-          'Somos una radio cristiana bilingüe dedicada a compartir la palabra de Dios, la adoración y mensajes de fe que fortalecen la vida espiritual.';
-        const enText =
-          'We are a bilingual Christian radio dedicated to sharing the Word of God, worship, and messages of faith that strengthen spiritual life.';
-
-        const text = lang === 'es' ? esText : enText;
         if (desc) desc.setAttribute('content', text);
-        if (og) og.setAttribute('content', text);
       }
-
       function applyI18n(lang) {
         i18nState.lang = lang;
-
         document.querySelectorAll('[data-i18n]').forEach((el) => {
           const key = el.getAttribute('data-i18n');
           el.textContent = i18n[lang][key] ?? el.textContent;
         });
-
         document.querySelectorAll('[data-i18n-placeholder]').forEach((el) => {
           const key = el.getAttribute('data-i18n-placeholder');
           el.placeholder = i18n[lang][key] ?? el.placeholder;
         });
-
         document
           .getElementById('btnES')
           .classList.toggle('active', lang === 'es');
         document
           .getElementById('btnEN')
           .classList.toggle('active', lang === 'en');
-
         document.documentElement.lang = lang;
-        document.title = 'Radio Emmanuel';
         setMetaForLang(lang);
-
-        // Ajuste inmediato del texto "Now Playing" al cambiar idioma
-        updateNowText();
+        updateStatusText(lastKnownState); // Actualizar texto al cambiar idioma
+        updateMuteButton();
       }
 
       async function shareLive() {
-        const base = window.location.href.split('#')[0];
-        const url = `${base}#live`;
-        const text =
-          i18nState.lang === 'es'
-            ? 'Escucha Radio Emmanuel en vivo:'
-            : 'Listen to Radio Emmanuel live:';
-
+        const url = `${window.location.href.split('#')[0]}#live`;
         try {
-          if (navigator.share) {
-            await navigator.share({ title: 'Radio Emmanuel', text, url });
-          } else if (navigator.clipboard) {
+          if (navigator.share)
+            await navigator.share({ title: 'Radio Emmanuel', url });
+          else {
             await navigator.clipboard.writeText(url);
-            alert(
-              i18nState.lang === 'es'
-                ? 'Link copiado. ¡Pégalo en WhatsApp!'
-                : 'Link copied. Paste it on WhatsApp!',
-            );
-          } else {
-            prompt(
-              i18nState.lang === 'es' ? 'Copia este link:' : 'Copy this link:',
-              url,
-            );
+            alert(i18nState.lang === 'es' ? 'Link copiado' : 'Link copied');
           }
         } catch (e) {}
       }
@@ -1271,49 +1255,126 @@
         .toLowerCase()
         .startsWith('es');
       applyI18n(prefersES ? 'es' : 'en');
-
       document
         .getElementById('btnES')
         .addEventListener('click', () => applyI18n('es'));
       document
         .getElementById('btnEN')
         .addEventListener('click', () => applyI18n('en'));
-
       document.getElementById('year').textContent = new Date().getFullYear();
 
       /* ===========================
-         PLAYER REAL (Icecast)
+         LOGICA AVANZADA DEL PLAYER
          =========================== */
-      const STREAM_URL = 'http://uk5freenew.listen2myradio.com:36073/stream';
+
+      // DATOS REALES EXTRAÍDOS DE TU IMAGEN:
+      // Host: uk5freenew.listen2myradio.com
+      // Port: 36073
+      // Mount: /stream
+      const STREAM_CANDIDATES = [
+        // 1. Conexión estándar Icecast (Hostname)
+        'http://uk5freenew.listen2myradio.com:36073/stream',
+        // 2. Conexión directa IP
+        'http://78.129.132.7:36073/stream',
+        // 3. Fallback común para reproductores antiguos
+        'http://uk5freenew.listen2myradio.com:36073/;stream.mp3',
+      ];
 
       const audio = document.getElementById('radioAudio');
       const nowText = document.getElementById('nowText');
-
+      const statusBar = document.getElementById('statusBar');
+      const streamHint = document.getElementById('streamHint');
       const btnPlay = document.getElementById('btnPlay');
       const btnPause = document.getElementById('btnPause');
       const btnMute = document.getElementById('btnMute');
-
       const vol = document.getElementById('vol');
 
-      // Volumen inicial
+      let lastKnownState = 'idle'; // idle, buffering, playing, error, paused
+
       audio.volume = Number(vol.value || 1);
+
+      // --- Controladores de Eventos del Audio ---
+      audio.addEventListener('loadstart', () => {
+        setStatus('buffering');
+      });
+
+      audio.addEventListener('waiting', () => {
+        setStatus('buffering');
+      });
+
+      audio.addEventListener('canplay', () => {
+        // No cambiamos a playing hasta que realmente arranque
+      });
+
+      audio.addEventListener('playing', () => {
+        setStatus('playing');
+        streamHint.style.display = 'none';
+      });
+
+      audio.addEventListener('pause', () => {
+        setStatus('paused');
+      });
+
+      audio.addEventListener('error', () => {
+        setStatus('error');
+      });
+      audio.addEventListener('ended', () => {
+        setStatus('paused'); // Stream cortado
+      });
+
+      // --- Función Central de Estado ---
+      function setStatus(state) {
+        lastKnownState = state;
+
+        statusBar.className = 'bar'; // Reset
+
+        if (state === 'buffering') {
+          statusBar.classList.add('buffering');
+        } else if (state === 'playing') {
+          statusBar.classList.add('live');
+        } else if (state === 'error') {
+          statusBar.classList.add('error');
+        } else {
+          statusBar.classList.add('idle'); // Paused o Idle
+        }
+
+        updateStatusText(state);
+      }
+
+      function updateStatusText(state) {
+        const isES = i18nState.lang === 'es';
+        let msg = '';
+
+        switch (state) {
+          case 'buffering':
+            msg = isES ? '📡 Conectando señal...' : '📡 Connecting signal...';
+            break;
+          case 'playing':
+            msg = isES
+              ? '🔴 EN VIVO - Transmitiendo ahora'
+              : '🔴 LIVE - Streaming now';
+            break;
+          case 'paused':
+            msg = isES ? '⏸️ Transmisión pausada' : '⏸️ Stream paused';
+            break;
+          case 'error':
+            msg = isES ? '⚠️ Error de conexión' : '⚠️ Connection error';
+            break;
+          default: // idle
+            msg = isES
+              ? 'Listo para escuchar. Presiona Reproducir.'
+              : 'Ready to listen. Press Play.';
+        }
+
+        nowText.textContent = msg;
+      }
+
+      // --- Controles de Usuario ---
 
       vol.addEventListener('input', () => {
         audio.volume = Number(vol.value);
         if (audio.volume > 0) audio.muted = false;
         updateMuteButton();
-      });
-
-      btnPlay.addEventListener('click', async () => {
-        try {
-          // Forzar URL (por si el navegador "pierde" src)
-          if (!audio.src) audio.src = STREAM_URL;
-
-          await audio.play();
-        } catch (e) {
-          // iOS/Chrome bloquean si no fue gesto del usuario (pero aquí sí es click)
-          updateNowText('blocked');
-        }
       });
 
       btnPause.addEventListener('click', () => {
@@ -1323,67 +1384,46 @@
       btnMute.addEventListener('click', () => {
         audio.muted = !audio.muted;
         updateMuteButton();
-        updateNowText();
       });
 
       function updateMuteButton() {
         const label = i18nState.lang === 'es' ? 'Volumen' : 'Volume';
         btnMute.innerHTML =
           (audio.muted || audio.volume === 0 ? '🔇 ' : '🔊 ') +
-          `<span data-i18n="player.volume">${label}</span>`;
+          `<span>${label}</span>`;
       }
 
-      function updateNowText(forcedState) {
-        const isES = i18nState.lang === 'es';
+      btnPlay.addEventListener('click', async () => {
+        if (!audio.paused && !audio.error) return; // Ya tocando
 
-        if (forcedState === 'blocked') {
-          nowText.textContent = isES
-            ? 'Reproduciendo: (Tu navegador bloqueó la reproducción. Presiona Reproducir de nuevo.)'
-            : 'Now Playing: (Your browser blocked playback. Press Play again.)';
-          return;
+        streamHint.style.display = 'none';
+
+        // Intentar reproducir lista de candidatos
+        let success = false;
+        for (const url of STREAM_CANDIDATES) {
+          try {
+            setStatus('buffering');
+            audio.src = url;
+            await audio.play();
+            success = true;
+            break; // Éxito
+          } catch (e) {
+            console.warn('Fallo URL:', url);
+          }
         }
 
-        if (audio.error) {
-          nowText.textContent = isES
-            ? 'Reproduciendo: (Error de conexión con la transmisión)'
-            : 'Now Playing: (Stream connection error)';
-          return;
+        if (!success) {
+          setStatus('error');
+          streamHint.style.display = 'block';
+          streamHint.textContent =
+            i18nState.lang === 'es'
+              ? 'No pudimos conectar. Verifica que la radio esté ENCENDIDA.'
+              : 'Could not connect. Verify the radio is TURNED ON.';
         }
+      });
 
-        if (audio.paused) {
-          nowText.textContent = isES
-            ? 'Reproduciendo: (Presiona Reproducir)'
-            : 'Now Playing: (Press Play)';
-          return;
-        }
-
-        if (audio.muted || audio.volume === 0) {
-          nowText.textContent = isES
-            ? 'Reproduciendo: (En vivo • Silenciado)'
-            : 'Now Playing: (Live • Muted)';
-          return;
-        }
-
-        // Intento de metadata (si el navegador/servidor lo permite)
-        const title = audio.mediaSession?.metadata?.title;
-        if (title) {
-          nowText.textContent = isES
-            ? `Reproduciendo: ${title}`
-            : `Now Playing: ${title}`;
-        } else {
-          nowText.textContent = isES
-            ? 'Reproduciendo: (En vivo)'
-            : 'Now Playing: (Live)';
-        }
-      }
-
-      audio.addEventListener('playing', () => updateNowText());
-      audio.addEventListener('pause', () => updateNowText());
-      audio.addEventListener('volumechange', () => updateNowText());
-      audio.addEventListener('error', () => updateNowText());
-
-      // Tip: algunos navegadores no exponen metadata en Icecast; esto al menos mantiene el estado visible
-      updateNowText();
+      // Estado inicial
+      setStatus('idle');
       updateMuteButton();
     </script>
   </body>
