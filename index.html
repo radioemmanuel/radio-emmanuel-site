@@ -2,7 +2,6 @@
 <html lang="es">
   <head>
     <meta name="referrer" content="no-referrer" />
-
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Radio Emmanuel</title>
@@ -20,8 +19,8 @@
 
     <style>
       /* =========================================================
-         ☀️ TEMA DÍA: "CIELO DE MAÑANA" (DISEÑO ORIGINAL)
-         ========================================================= */
+          ☀️ TEMA DÍA: "CIELO DE MAÑANA"
+          ========================================================= */
       :root {
         --primary: #0a4f70;
         --primary2: #1e6b91;
@@ -235,20 +234,70 @@
         );
         opacity: 0.8;
       }
+
+      /* Grid Original del Hero (Mantiene la estructura de 2 columnas) */
       .heroInner {
         position: relative;
         padding: 30px;
         display: grid;
-        grid-template-columns: 1.2fr 0.8fr;
+        grid-template-columns: 1.2fr 0.8fr; /* Columna Slider / Columna Player */
         gap: 22px;
         align-items: center;
       }
+
+      /* ESTILOS DEL NUEVO SLIDER */
+      .hero-slider-container {
+        position: relative;
+        min-height: 320px; /* Altura mínima para evitar saltos */
+        display: flex;
+        align-items: center;
+      }
+      .hero-slide {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        width: 100%;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+        transform: translateY(-40%); /* Efecto de entrada desde abajo */
+      }
+      .hero-slide.active {
+        opacity: 1;
+        visibility: visible;
+        position: relative;
+        transform: translateY(0);
+        top: auto;
+      }
+      /* PUNTITOS DE NAVEGACIÓN */
+      .hero-dots {
+        position: absolute;
+        bottom: -20px;
+        left: 0;
+        display: flex;
+        gap: 8px;
+      }
+      .h-dot {
+        width: 8px;
+        height: 8px;
+        background-color: var(--stroke);
+        border-radius: 50%;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+      .h-dot.active {
+        background-color: var(--gold);
+        width: 24px;
+        border-radius: 10px;
+      }
+
       .kicker {
         display: flex;
         gap: 10px;
         align-items: center;
         color: var(--muted);
         font-size: 13px;
+        margin-bottom: 12px;
       }
       .liveDot {
         display: inline-flex;
@@ -269,7 +318,7 @@
         box-shadow: 0 0 0 6px rgba(255, 77, 77, 0.25);
       }
       h1 {
-        margin: 12px 0 10px;
+        margin: 0 0 10px;
         font-size: clamp(28px, 4vw, 44px);
         line-height: 1.05;
         color: var(--text);
@@ -597,6 +646,10 @@
         .heroInner {
           grid-template-columns: 1fr;
         }
+        .hero-slider-container {
+          min-height: auto;
+          margin-bottom: 20px;
+        }
         nav {
           display: none;
         }
@@ -624,7 +677,7 @@
         <nav>
           <a href="#live" data-i18n="nav.live">En vivo</a>
           <a href="#shows" data-i18n="nav.shows">Programas</a>
-          <a href="#podcast" data-i18n="nav.podcast">Podcast</a>
+          <a href="#location" data-i18n="nav.location">Ubicación</a>
           <a href="#prayer" data-i18n="nav.prayer">Peticiones</a>
           <a href="#connect" data-i18n="nav.connect">Conecta</a>
         </nav>
@@ -642,48 +695,106 @@
       <div class="hero">
         <div class="heroCard">
           <div class="heroInner">
-            <div>
-              <div class="kicker">
-                <span class="liveDot"
-                  ><span class="dot"></span
-                  ><span data-i18n="hero.liveBadge">EN VIVO</span></span
-                >
-                <span class="mini" data-i18n="hero.kicker"
-                  >Tira la red con fe</span
-                >
+            <div class="hero-slider-container">
+              <div class="hero-slide active">
+                <div class="kicker">
+                  <span class="liveDot"
+                    ><span class="dot"></span
+                    ><span data-i18n="hero.liveBadge">EN VIVO</span></span
+                  >
+                  <span class="mini" data-i18n="hero.kicker"
+                    >Tira la red con fe</span
+                  >
+                </div>
+                <h1 data-i18n="hero.title">
+                  Palabra y adoración, todos los días.
+                </h1>
+                <p class="sub" data-i18n="hero.subtitle">
+                  Somos una radio cristiana bilingüe dedicada a compartir la
+                  palabra de Dios y mensajes de fe.
+                </p>
+                <div class="ctaRow">
+                  <button
+                    class="btn gold"
+                    onclick="
+                      document
+                        .getElementById('live')
+                        .scrollIntoView({ behavior: 'smooth' })
+                    "
+                  >
+                    🎧 <span data-i18n="hero.ctaLive">Escuchar en vivo</span>
+                  </button>
+                  <button
+                    class="btn primary"
+                    onclick="
+                      document
+                        .getElementById('location')
+                        .scrollIntoView({ behavior: 'smooth' })
+                    "
+                  >
+                    📍 <span data-i18n="hero.ctaLocation">Ver Ubicación</span>
+                  </button>
+                </div>
               </div>
-              <h1 data-i18n="hero.title">
-                Palabra y adoración, todos los días.
-              </h1>
-              <p class="sub" data-i18n="hero.subtitle">
-                Somos una radio cristiana bilingüe dedicada a compartir la
-                palabra de Dios, la adoración y mensajes de fe que fortalecen la
-                vida espiritual.
-              </p>
-              <div class="ctaRow">
-                <button
-                  class="btn gold"
-                  onclick="
-                    document
-                      .getElementById('live')
-                      .scrollIntoView({ behavior: 'smooth' })
-                  "
-                >
-                  🎧 <span data-i18n="hero.ctaLive">Escuchar en vivo</span>
-                </button>
-                <button
-                  class="btn primary"
-                  onclick="
-                    document
-                      .getElementById('podcast')
-                      .scrollIntoView({ behavior: 'smooth' })
-                  "
-                >
-                  🎙️ <span data-i18n="hero.ctaPodcast">Ir al Podcast</span>
-                </button>
-                <span class="mini" data-i18n="hero.note"
-                  >Marca y logo se definirán pronto.</span
-                >
+
+              <div class="hero-slide">
+                <div class="kicker">
+                  <span class="tag main" data-i18n="hero.s2.tag"
+                    >DOMINGOS 10AM</span
+                  >
+                  <span class="mini" data-i18n="hero.s2.mini"
+                    >Ven con tu familia</span
+                  >
+                </div>
+                <h1 data-i18n="hero.s2.title">Una casa de puertas abiertas.</h1>
+                <p class="sub" data-i18n="hero.s2.sub">
+                  Te invitamos a nuestros servicios presenciales en el Templo
+                  Emmanuel. Un tiempo de milagros y renovación.
+                </p>
+                <div class="ctaRow">
+                  <button
+                    class="btn primary"
+                    onclick="
+                      document
+                        .getElementById('location')
+                        .scrollIntoView({ behavior: 'smooth' })
+                    "
+                  >
+                    🗺️ <span data-i18n="hero.s2.btn">Ver cómo llegar</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="hero-slide">
+                <div class="kicker">
+                  <span class="tag" data-i18n="hero.s3.tag">NUEVO</span>
+                  <span class="mini" data-i18n="hero.s3.mini"
+                    >Llévanos contigo</span
+                  >
+                </div>
+                <h1 data-i18n="hero.s3.title">La radio que edifica tu vida.</h1>
+                <p class="sub" data-i18n="hero.s3.sub">
+                  Síguenos en nuestras redes sociales o envíanos un mensaje de
+                  WhatsApp para pedir tu alabanza favorita.
+                </p>
+                <div class="ctaRow">
+                  <button
+                    class="btn gold"
+                    onclick="
+                      document
+                        .getElementById('connect')
+                        .scrollIntoView({ behavior: 'smooth' })
+                    "
+                  >
+                    💬 <span data-i18n="hero.s3.btn">Enviar WhatsApp</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="hero-dots">
+                <span class="h-dot active" onclick="goToSlide(0)"></span>
+                <span class="h-dot" onclick="goToSlide(1)"></span>
+                <span class="h-dot" onclick="goToSlide(2)"></span>
               </div>
             </div>
 
@@ -697,22 +808,18 @@
                   >Compatible móvil</span
                 >
               </div>
-
               <div class="now" id="nowText" data-i18n="player.now">
                 Listo para reproducir
               </div>
-
               <div class="progress">
                 <div class="bar idle" id="statusBar"></div>
               </div>
-
               <div class="audioWrap">
                 <audio
                   id="radioAudio"
                   preload="none"
                   referrerpolicy="no-referrer"
                 ></audio>
-
                 <div class="volRow">
                   <span style="font-weight: 900; font-size: 12px">🔊</span>
                   <input
@@ -725,7 +832,6 @@
                   />
                 </div>
               </div>
-
               <div class="playerBtns">
                 <button class="btn" type="button" id="btnPlay">
                   ▶️ <span data-i18n="player.play">Reproducir</span>
@@ -742,7 +848,6 @@
                   🔊 <span data-i18n="player.volume">Volumen</span>
                 </button>
               </div>
-
               <div id="popupContainer" style="display: none; margin-top: 10px">
                 <button
                   class="btn"
@@ -759,7 +864,6 @@
                   <span data-i18n="player.popup">Abrir Reproductor Seguro</span>
                 </button>
               </div>
-
               <p
                 class="mini"
                 style="margin-top: 12px"
@@ -820,50 +924,103 @@
               </div>
             </div>
           </div>
-          <div class="card" id="podcast">
+
+          <div class="card" id="location">
             <div class="sectionTitle">
-              <h2 data-i18n="podcast.title">Podcast</h2>
-              <p class="hint" data-i18n="podcast.hint">Episodios recientes</p>
+              <h2 data-i18n="loc.title">Horarios y Ubicación</h2>
+              <p
+                style="
+                  color: var(--gold);
+                  font-weight: 900;
+                  font-size: 15px;
+                  margin: 0;
+                  opacity: 1;
+                "
+              >
+                📍 <span data-i18n="loc.temple">Templo Emmanuel</span>
+              </p>
             </div>
             <div class="list">
               <div class="item">
                 <div>
-                  <strong data-i18n="podcast.e1.name"
-                    >Fe en tiempos difíciles</strong
-                  >
-                  <div class="meta" data-i18n="podcast.e1.meta">
-                    EN • Ene 2026 • 18 min
-                  </div>
+                  <strong data-i18n="loc.sunday">Domingo</strong>
+                  <div class="meta">10:00 a.m.</div>
                 </div>
-                <span class="tag">▶️</span>
+                <span class="tag main" data-i18n="loc.worship">Culto</span>
               </div>
               <div class="item">
                 <div>
-                  <strong data-i18n="podcast.e2.name"
-                    >Tira la red con fe</strong
-                  >
-                  <div class="meta" data-i18n="podcast.e2.meta">
-                    ES • Ene 2026 • 22 min
-                  </div>
+                  <strong data-i18n="loc.wednesday">Miércoles</strong>
+                  <div class="meta">07:00 p.m.</div>
                 </div>
-                <span class="tag">▶️</span>
+                <span class="tag" data-i18n="loc.prayer">Oración</span>
               </div>
-              <div class="item">
-                <div>
-                  <strong data-i18n="podcast.e3.name"
-                    >Oración que fortalece</strong
+
+              <div
+                style="
+                  display: grid;
+                  grid-template-columns: 1fr 1fr;
+                  gap: 12px;
+                  margin-top: 4px;
+                "
+              >
+                <div
+                  style="
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    font-size: 13px;
+                    color: var(--muted);
+                  "
+                >
+                  <div
+                    style="
+                      margin-bottom: 4px;
+                      font-weight: 900;
+                      color: var(--text);
+                    "
+                    data-i18n="loc.addressLabel"
                   >
-                  <div class="meta" data-i18n="podcast.e3.meta">
-                    EN • Ene 2026 • 16 min
+                    Dirección:
                   </div>
+                  <div style="line-height: 1.4">
+                    712 Kenyond Rd,<br />Edinburg, Texas.
+                  </div>
+                  <a
+                    href="https://www.google.com/maps/search/?api=1&query=712+Kenyond+Rd,+Edinburg,+Texas"
+                    target="_blank"
+                    style="
+                      margin-top: 8px;
+                      color: var(--primary2);
+                      font-weight: bold;
+                      font-size: 12px;
+                      display: flex;
+                      align-items: center;
+                      gap: 4px;
+                    "
+                  >
+                    <span data-i18n="loc.mapBtn">Ver en Mapa</span> ↗
+                  </a>
                 </div>
-                <span class="tag">▶️</span>
+                <div
+                  style="
+                    border-radius: 12px;
+                    overflow: hidden;
+                    border: 1px solid var(--stroke2);
+                  "
+                >
+                  <iframe
+                    src="https://www.google.com/maps?q=712+Kenyond+Rd,+Edinburg,+Texas&output=embed"
+                    width="100%"
+                    height="100%"
+                    style="border: 0; min-height: 100px; opacity: 0.8"
+                    allowfullscreen=""
+                    loading="lazy"
+                  >
+                  </iframe>
+                </div>
               </div>
             </div>
-            <p class="mini" style="margin-top: 12px" data-i18n="podcast.helper">
-              Después conectamos Spotify, Apple Podcasts o un RSS sencillo e
-              incrustamos reproductores por episodio.
-            </p>
           </div>
         </div>
       </section>
@@ -935,15 +1092,44 @@
                   Agregar número después
                 </div>
               </div>
-              <span class="tag">💬</span>
+              <span class="tag">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  width="18"
+                  height="18"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"
+                  />
+                </svg>
+              </span>
             </div>
+
             <div class="item">
               <div>
                 <strong data-i18n="connect.email">Correo</strong>
                 <div class="meta">radioemmanuel@tudominio.com</div>
               </div>
-              <span class="tag">✉️</span>
+              <span class="tag">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  width="18"
+                  height="18"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M1.5 8.67v8.58a3 3 0 003 3h15a3 3 0 003-3V8.67l-8.928 5.493a3 3 0 01-3.144 0L1.5 8.67z"
+                  />
+                  <path
+                    d="M22.5 6.908V6.75a3 3 0 00-3-3h-15a3 3 0 00-3 3v.158l9.714 5.978a1.5 1.5 0 001.572 0L22.5 6.908z"
+                  />
+                </svg>
+              </span>
             </div>
+
             <div class="item">
               <div>
                 <strong data-i18n="connect.social">Redes</strong>
@@ -951,7 +1137,21 @@
                   Links de Facebook / Instagram después
                 </div>
               </div>
-              <span class="tag">🌐</span>
+              <span class="tag">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  width="18"
+                  height="18"
+                  fill="currentColor"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M15.75 4.5a3 3 0 11.825 2.066l-8.421 4.679a3.002 3.002 0 010 1.51l8.421 4.679a3 3 0 11-.729 1.31l-8.421-4.678a3 3 0 110-4.132l8.421-4.679a3 3 0 01-.096-.755z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+              </span>
             </div>
           </div>
           <p class="mini" style="margin-top: 12px" data-i18n="connect.helper">
@@ -978,8 +1178,8 @@
 
     <script>
       /* ========================================================
-         SCRIPT DE IDIOMA Y TEMA
-         ======================================================== */
+          SCRIPT DE IDIOMA Y TEMA
+          ======================================================== */
       const themeBtn = document.getElementById('themeBtn');
       const htmlEl = document.documentElement;
       const savedTheme = localStorage.getItem('theme');
@@ -1004,23 +1204,38 @@
         themeBtn.textContent = newTheme === 'dark' ? '🌙' : '☀️';
       });
 
-      // DICCIONARIO COMPLETO (Restaurado)
+      // DICCIONARIO COMPLETO (Actualizado con Slider y Ubicación)
       const i18n = {
         en: {
           'header.subtitle': 'Bilingual Christian Radio • Edinburg, TX',
           'nav.live': 'Live',
           'nav.shows': 'Shows',
-          'nav.podcast': 'Podcast',
+          'nav.location': 'Location',
           'nav.prayer': 'Prayer Requests',
           'nav.connect': 'Connect',
+
           'hero.liveBadge': 'LIVE',
           'hero.kicker': 'Cast the net in faith',
           'hero.title': 'Word and worship, every day.',
           'hero.subtitle':
-            'We are a bilingual Christian radio dedicated to sharing the Word of God, worship, and messages of faith that strengthen spiritual life.',
+            'We are a bilingual Christian radio dedicated to sharing the Word of God and messages of faith.',
           'hero.ctaLive': 'Listen Live',
-          'hero.ctaPodcast': 'Go to Podcast',
+          'hero.ctaLocation': 'See Location',
           'hero.note': 'Brand & logo will be defined soon.',
+
+          'hero.s2.tag': 'SUNDAYS 10AM',
+          'hero.s2.mini': 'Bring your family',
+          'hero.s2.title': 'A house of open doors.',
+          'hero.s2.sub':
+            'We invite you to our in-person services at Emmanuel Temple. A time of miracles and renewal.',
+          'hero.s2.btn': 'Get Directions',
+
+          'hero.s3.tag': 'NEW',
+          'hero.s3.mini': 'Take us with you',
+          'hero.s3.title': 'The radio that builds your life.',
+          'hero.s3.sub':
+            'Follow us on social media or send us a WhatsApp message to request your favorite song.',
+          'hero.s3.btn': 'Send WhatsApp',
 
           'player.status': 'LIVE',
           'player.quality': 'Mobile Friendly',
@@ -1046,16 +1261,14 @@
           'shows.tagMusic': 'Worship',
           'shows.tagTalk': 'Talk',
 
-          'podcast.title': 'Podcast',
-          'podcast.hint': 'Latest episodes (placeholder data)',
-          'podcast.e1.name': 'Faith in Difficult Times',
-          'podcast.e1.meta': 'EN • Jan 2026 • 18 min',
-          'podcast.e2.name': 'Cast the net in faith',
-          'podcast.e2.meta': 'ES • Jan 2026 • 22 min',
-          'podcast.e3.name': 'Prayer that Strengthens',
-          'podcast.e3.meta': 'EN • Jan 2026 • 16 min',
-          'podcast.helper':
-            'Later we can connect Spotify, Apple Podcasts, or a simple RSS feed and embed players per episode.',
+          'loc.title': 'Schedule & Location',
+          'loc.temple': 'Emmanuel Temple',
+          'loc.sunday': 'Sunday',
+          'loc.worship': 'Worship',
+          'loc.wednesday': 'Wednesday',
+          'loc.prayer': 'Prayer',
+          'loc.addressLabel': 'Address:',
+          'loc.mapBtn': 'Open Map',
 
           'prayer.title': 'Prayer Requests',
           'prayer.hint': 'We are praying for you',
@@ -1084,17 +1297,32 @@
           'header.subtitle': 'Radio cristiana bilingüe • Edinburg, TX',
           'nav.live': 'En vivo',
           'nav.shows': 'Programas',
-          'nav.podcast': 'Podcast',
+          'nav.location': 'Ubicación',
           'nav.prayer': 'Peticiones',
           'nav.connect': 'Conecta',
+
           'hero.liveBadge': 'EN VIVO',
           'hero.kicker': 'Tira la red con fe',
           'hero.title': 'Palabra y adoración, todos los días.',
           'hero.subtitle':
-            'Somos una radio cristiana bilingüe dedicada a compartir la palabra de Dios, la adoración y mensajes de fe que fortalecen la vida espiritual.',
+            'Somos una radio cristiana bilingüe dedicada a compartir la palabra de Dios y mensajes de fe.',
           'hero.ctaLive': 'Escuchar en vivo',
-          'hero.ctaPodcast': 'Ir al Podcast',
+          'hero.ctaLocation': 'Ver Ubicación',
           'hero.note': 'Marca y logo se definirán pronto.',
+
+          'hero.s2.tag': 'DOMINGOS 10AM',
+          'hero.s2.mini': 'Ven con tu familia',
+          'hero.s2.title': 'Una casa de puertas abiertas.',
+          'hero.s2.sub':
+            'Te invitamos a nuestros servicios presenciales en el Templo Emmanuel. Un tiempo de milagros y renovación.',
+          'hero.s2.btn': 'Ver cómo llegar',
+
+          'hero.s3.tag': 'NUEVO',
+          'hero.s3.mini': 'Llévanos contigo',
+          'hero.s3.title': 'La radio que edifica tu vida.',
+          'hero.s3.sub':
+            'Síguenos en nuestras redes sociales o envíanos un mensaje de WhatsApp para pedir tu alabanza favorita.',
+          'hero.s3.btn': 'Enviar WhatsApp',
 
           'player.status': 'EN VIVO',
           'player.quality': 'Compatible móvil',
@@ -1120,16 +1348,14 @@
           'shows.tagMusic': 'Adoración',
           'shows.tagTalk': 'Charlas',
 
-          'podcast.title': 'Podcast',
-          'podcast.hint': 'Episodios recientes (datos de ejemplo)',
-          'podcast.e1.name': 'Fe en tiempos difíciles',
-          'podcast.e1.meta': 'EN • Ene 2026 • 18 min',
-          'podcast.e2.name': 'Tira la red con fe',
-          'podcast.e2.meta': 'ES • Ene 2026 • 22 min',
-          'podcast.e3.name': 'Oración que fortalece',
-          'podcast.e3.meta': 'EN • Ene 2026 • 16 min',
-          'podcast.helper':
-            'Después conectamos Spotify, Apple Podcasts o un RSS sencillo e incrustamos reproductores por episodio.',
+          'loc.title': 'Horarios y Ubicación',
+          'loc.temple': 'Templo Emmanuel',
+          'loc.sunday': 'Domingo',
+          'loc.worship': 'Culto',
+          'loc.wednesday': 'Miércoles',
+          'loc.prayer': 'Oración',
+          'loc.addressLabel': 'Dirección:',
+          'loc.mapBtn': 'Ver en Mapa',
 
           'prayer.title': 'Peticiones de oración',
           'prayer.hint': 'Estamos orando por ti',
@@ -1184,17 +1410,13 @@
       document.getElementById('year').textContent = new Date().getFullYear();
 
       /* ========================================================
-         SCRIPT DE AUDIO (LÓGICA BLINDADA)
-         ======================================================== */
-
-      // ORDEN OPTIMIZADO: 1. IP Directa (Más robusta), 2. Fallback Shoutcast, 3. Proxy
+          SCRIPT DE AUDIO (LÓGICA BLINDADA)
+          ======================================================== */
       const STREAM_URLS = [
         'http://78.129.132.7:36073/stream',
         'http://78.129.132.7:36073/;stream.mp3',
         'http://radioemmanueledinburg.radiostream321.com/stream',
       ];
-
-      // URL del popup oficial (Siempre funciona)
       const POPUP_URL = 'http://radioemmanueledinburg.radiostream321.com/';
 
       const audio = document.getElementById('radioAudio');
@@ -1209,7 +1431,6 @@
       let lastKnownState = 'idle';
       audio.volume = 1;
 
-      // Eventos de Audio
       audio.addEventListener('loadstart', () => setStatus('buffering'));
       audio.addEventListener('waiting', () => setStatus('buffering'));
       audio.addEventListener('playing', () => {
@@ -1223,7 +1444,6 @@
       });
       audio.addEventListener('ended', () => setStatus('idle'));
 
-      // Función visual
       function setStatus(state) {
         lastKnownState = state;
         statusBar.className = 'bar'; // Reset
@@ -1244,7 +1464,6 @@
           nowText.textContent = isES ? 'Error de conexión' : 'Connection Error';
           toggleButtons(false);
         } else {
-          // idle
           statusBar.classList.add('idle');
           nowText.textContent = isES ? 'Listo para escuchar' : 'Ready to play';
           toggleButtons(false);
@@ -1261,7 +1480,6 @@
         }
       }
 
-      // Controles
       vol.addEventListener('input', () => {
         audio.volume = Number(vol.value);
         if (audio.volume > 0) audio.muted = false;
@@ -1284,32 +1502,27 @@
         setStatus('idle');
       });
 
-      // LOGICA PLAY PRINCIPAL
       btnPlay.addEventListener('click', async () => {
         popupContainer.style.display = 'none';
         setStatus('buffering');
-
         let success = false;
-        // Intentar conectar en orden
         for (const url of STREAM_URLS) {
           try {
             console.log('Probando: ' + url);
             audio.src = url;
             await audio.play();
             success = true;
-            break; // Conectado
+            break;
           } catch (e) {
             console.warn('Falló: ' + url);
           }
         }
-
         if (!success) {
           setStatus('error');
-          popupContainer.style.display = 'block'; // Mostrar botón rojo
+          popupContainer.style.display = 'block';
         }
       });
 
-      // Abrir Popup Seguro
       window.openPopupPlayer = function () {
         window.open(
           POPUP_URL,
@@ -1331,6 +1544,45 @@
       }
 
       updateMuteButton();
+
+      /* =========================================
+         SCRIPT DEL HERO SLIDER (AUTOMÁTICO)
+         ========================================= */
+      let currentSlide = 0;
+      const slides = document.querySelectorAll('.hero-slide');
+      const dots = document.querySelectorAll('.h-dot');
+      const totalSlides = slides.length;
+      let slideInterval;
+
+      function goToSlide(n) {
+        slides.forEach((s) => s.classList.remove('active'));
+        dots.forEach((d) => d.classList.remove('active'));
+        currentSlide = (n + totalSlides) % totalSlides;
+        slides[currentSlide].classList.add('active');
+        dots[currentSlide].classList.add('active');
+      }
+
+      function nextSlide() {
+        goToSlide(currentSlide + 1);
+      }
+
+      function startSlider() {
+        slideInterval = setInterval(nextSlide, 5000); // 5 Segundos
+      }
+
+      function stopSlider() {
+        clearInterval(slideInterval);
+      }
+
+      // Iniciar
+      if (totalSlides > 0) startSlider();
+
+      // Pausar si el mouse está encima
+      const sliderContainer = document.querySelector('.hero-slider-container');
+      if (sliderContainer) {
+        sliderContainer.addEventListener('mouseenter', stopSlider);
+        sliderContainer.addEventListener('mouseleave', startSlider);
+      }
     </script>
   </body>
 </html>
