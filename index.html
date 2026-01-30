@@ -235,20 +235,20 @@
         opacity: 0.8;
       }
 
-      /* Grid Original del Hero (Mantiene la estructura de 2 columnas) */
+      /* Grid Original del Hero */
       .heroInner {
         position: relative;
         padding: 30px;
         display: grid;
-        grid-template-columns: 1.2fr 0.8fr; /* Columna Slider / Columna Player */
+        grid-template-columns: 1.2fr 0.8fr;
         gap: 22px;
         align-items: center;
       }
 
-      /* ESTILOS DEL NUEVO SLIDER */
+      /* ESTILOS DEL SLIDER */
       .hero-slider-container {
         position: relative;
-        min-height: 320px; /* Altura mínima para evitar saltos */
+        min-height: 320px;
         display: flex;
         align-items: center;
       }
@@ -260,7 +260,7 @@
         opacity: 0;
         visibility: hidden;
         transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
-        transform: translateY(-40%); /* Efecto de entrada desde abajo */
+        transform: translateY(-40%);
       }
       .hero-slide.active {
         opacity: 1;
@@ -269,7 +269,6 @@
         transform: translateY(0);
         top: auto;
       }
-      /* PUNTITOS DE NAVEGACIÓN */
       .hero-dots {
         position: absolute;
         bottom: -20px;
@@ -367,6 +366,10 @@
         border-color: rgba(199, 171, 102, 0.55);
         color: #fff;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+      }
+      .btn:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
       }
       .mini {
         font-size: 13px;
@@ -869,7 +872,7 @@
                 style="margin-top: 12px"
                 data-i18n="player.helper"
               >
-                Conectado al servidor Listen2MyRadio (Icecast).
+                Conectado al servidor propio (HTTPS).
               </p>
             </div>
           </div>
@@ -1031,21 +1034,14 @@
             <h2 data-i18n="prayer.title">Peticiones de oración</h2>
             <p class="hint" data-i18n="prayer.hint">Estamos orando por ti</p>
           </div>
-          <form
-            onsubmit="
-              event.preventDefault();
-              alert(
-                i18nState.lang === 'es'
-                  ? '¡Recibido! Estamos orando por ti.'
-                  : 'Received! We are praying for you.',
-              );
-            "
-          >
+          <form id="prayerForm">
             <div class="row">
               <div>
                 <label data-i18n="prayer.nameLabel">Nombre</label>
                 <input
                   type="text"
+                  name="name"
+                  id="nameInput"
                   placeholder="Nombre"
                   required
                   data-i18n-placeholder="prayer.namePlaceholder"
@@ -1053,7 +1049,7 @@
               </div>
               <div>
                 <label data-i18n="prayer.langLabel">Idioma</label>
-                <select>
+                <select name="language">
                   <option value="es">ES</option>
                   <option value="en" selected>EN</option>
                 </select>
@@ -1061,12 +1057,25 @@
             </div>
             <label data-i18n="prayer.msgLabel">Tu petición</label>
             <textarea
+              name="message"
               placeholder="Escribe tu petición de oración..."
               required
               data-i18n-placeholder="prayer.msgPlaceholder"
             ></textarea>
+
+            <p
+              id="formStatus"
+              class="mini"
+              style="
+                display: none;
+                margin-top: 10px;
+                color: var(--primary2);
+                font-weight: bold;
+              "
+            ></p>
+
             <div style="margin-top: 12px">
-              <button class="btn gold" type="submit">
+              <button class="btn gold" type="submit" id="btnSendPrayer">
                 🙏 <span data-i18n="prayer.send">Enviar</span>
               </button>
               <span
@@ -1110,7 +1119,7 @@
             <div class="item">
               <div>
                 <strong data-i18n="connect.email">Correo</strong>
-                <div class="meta">radioemmanuel@tudominio.com</div>
+                <div class="meta">temploemmanuel712@gmail.com</div>
               </div>
               <span class="tag">
                 <svg
@@ -1178,8 +1187,27 @@
 
     <script>
       /* ========================================================
+          CONFIGURACIONES PRINCIPALES (YA ACTUALIZADAS)
+         ======================================================== */
+      // 1. TU LINK DE FORMSPREE
+      const FORMSPREE_ENDPOINT = 'https://formspree.io/f/maqjaqbg';
+
+      // 2. TU ENLACE RÁPIDO DE CLOUDFLARE (Copiado de tu terminal)
+      const RADIO_HOST = 'sept-pottery-capabilities-applying.trycloudflare.com';
+      const MOUNT_POINT = '/stream';
+
+      // Construimos las URLs automáticamente
+      const STREAM_URLS = [
+        `https://${RADIO_HOST}${MOUNT_POINT}`,
+        `https://${RADIO_HOST}${MOUNT_POINT}.mp3`,
+      ];
+
+      // URL para obtener datos (Título, Oyentes) del Icecast JSON
+      const STATS_URL = `https://${RADIO_HOST}/status-json.xsl`;
+
+      /* ========================================================
           SCRIPT DE IDIOMA Y TEMA
-          ======================================================== */
+         ======================================================== */
       const themeBtn = document.getElementById('themeBtn');
       const htmlEl = document.documentElement;
       const savedTheme = localStorage.getItem('theme');
@@ -1204,7 +1232,7 @@
         themeBtn.textContent = newTheme === 'dark' ? '🌙' : '☀️';
       });
 
-      // DICCIONARIO COMPLETO (Actualizado con Slider y Ubicación)
+      // DICCIONARIO
       const i18n = {
         en: {
           'header.subtitle': 'Bilingual Christian Radio • Edinburg, TX',
@@ -1213,7 +1241,6 @@
           'nav.location': 'Location',
           'nav.prayer': 'Prayer Requests',
           'nav.connect': 'Connect',
-
           'hero.liveBadge': 'LIVE',
           'hero.kicker': 'Cast the net in faith',
           'hero.title': 'Word and worship, every day.',
@@ -1221,22 +1248,18 @@
             'We are a bilingual Christian radio dedicated to sharing the Word of God and messages of faith.',
           'hero.ctaLive': 'Listen Live',
           'hero.ctaLocation': 'See Location',
-          'hero.note': 'Brand & logo will be defined soon.',
-
           'hero.s2.tag': 'SUNDAYS 10AM',
           'hero.s2.mini': 'Bring your family',
           'hero.s2.title': 'A house of open doors.',
           'hero.s2.sub':
             'We invite you to our in-person services at Emmanuel Temple. A time of miracles and renewal.',
           'hero.s2.btn': 'Get Directions',
-
           'hero.s3.tag': 'NEW',
           'hero.s3.mini': 'Take us with you',
           'hero.s3.title': 'The radio that builds your life.',
           'hero.s3.sub':
             'Follow us on social media or send us a WhatsApp message to request your favorite song.',
           'hero.s3.btn': 'Send WhatsApp',
-
           'player.status': 'LIVE',
           'player.quality': 'Mobile Friendly',
           'player.now': 'Ready to play',
@@ -1244,8 +1267,7 @@
           'player.pause': 'Pause',
           'player.volume': 'Volume',
           'player.popup': 'Open Secure Player',
-          'player.helper': 'Connected to Listen2MyRadio (Icecast).',
-
+          'player.helper': 'Connected to Server (HTTPS).',
           'shows.title': 'Shows',
           'shows.hint': 'Schedule and hosts (placeholder data)',
           'shows.s0.name': 'God with Us',
@@ -1260,7 +1282,6 @@
           'shows.tagLive': 'LIVE',
           'shows.tagMusic': 'Worship',
           'shows.tagTalk': 'Talk',
-
           'loc.title': 'Schedule & Location',
           'loc.temple': 'Emmanuel Temple',
           'loc.sunday': 'Sunday',
@@ -1269,7 +1290,6 @@
           'loc.prayer': 'Prayer',
           'loc.addressLabel': 'Address:',
           'loc.mapBtn': 'Open Map',
-
           'prayer.title': 'Prayer Requests',
           'prayer.hint': 'We are praying for you',
           'prayer.nameLabel': 'Name',
@@ -1279,7 +1299,6 @@
           'prayer.note': 'Private and respectful.',
           'prayer.namePlaceholder': 'Name',
           'prayer.msgPlaceholder': 'Type your prayer request...',
-
           'connect.title': 'Connect',
           'connect.hint': 'Edinburg, Texas',
           'connect.whats': 'WhatsApp',
@@ -1300,7 +1319,6 @@
           'nav.location': 'Ubicación',
           'nav.prayer': 'Peticiones',
           'nav.connect': 'Conecta',
-
           'hero.liveBadge': 'EN VIVO',
           'hero.kicker': 'Tira la red con fe',
           'hero.title': 'Palabra y adoración, todos los días.',
@@ -1308,22 +1326,18 @@
             'Somos una radio cristiana bilingüe dedicada a compartir la palabra de Dios y mensajes de fe.',
           'hero.ctaLive': 'Escuchar en vivo',
           'hero.ctaLocation': 'Ver Ubicación',
-          'hero.note': 'Marca y logo se definirán pronto.',
-
           'hero.s2.tag': 'DOMINGOS 10AM',
           'hero.s2.mini': 'Ven con tu familia',
           'hero.s2.title': 'Una casa de puertas abiertas.',
           'hero.s2.sub':
             'Te invitamos a nuestros servicios presenciales en el Templo Emmanuel. Un tiempo de milagros y renovación.',
           'hero.s2.btn': 'Ver cómo llegar',
-
           'hero.s3.tag': 'NUEVO',
           'hero.s3.mini': 'Llévanos contigo',
           'hero.s3.title': 'La radio que edifica tu vida.',
           'hero.s3.sub':
             'Síguenos en nuestras redes sociales o envíanos un mensaje de WhatsApp para pedir tu alabanza favorita.',
           'hero.s3.btn': 'Enviar WhatsApp',
-
           'player.status': 'EN VIVO',
           'player.quality': 'Compatible móvil',
           'player.now': 'Listo para reproducir',
@@ -1331,8 +1345,7 @@
           'player.pause': 'Pausar',
           'player.volume': 'Volumen',
           'player.popup': 'Abrir Reproductor Seguro',
-          'player.helper': 'Conectado al servidor Listen2MyRadio (Icecast).',
-
+          'player.helper': 'Conectado al servidor propio (HTTPS).',
           'shows.title': 'Programas',
           'shows.hint': 'Horario y responsables (datos de ejemplo)',
           'shows.s0.name': 'Dios con nosotros',
@@ -1347,7 +1360,6 @@
           'shows.tagLive': 'EN VIVO',
           'shows.tagMusic': 'Adoración',
           'shows.tagTalk': 'Charlas',
-
           'loc.title': 'Horarios y Ubicación',
           'loc.temple': 'Templo Emmanuel',
           'loc.sunday': 'Domingo',
@@ -1356,7 +1368,6 @@
           'loc.prayer': 'Oración',
           'loc.addressLabel': 'Dirección:',
           'loc.mapBtn': 'Ver en Mapa',
-
           'prayer.title': 'Peticiones de oración',
           'prayer.hint': 'Estamos orando por ti',
           'prayer.nameLabel': 'Nombre',
@@ -1366,7 +1377,6 @@
           'prayer.note': 'Privado y respetuoso.',
           'prayer.namePlaceholder': 'Nombre',
           'prayer.msgPlaceholder': 'Escribe tu petición de oración...',
-
           'connect.title': 'Conecta',
           'connect.hint': 'Edinburg, Texas',
           'connect.whats': 'WhatsApp',
@@ -1399,7 +1409,7 @@
         document
           .getElementById('btnEN')
           .classList.toggle('active', lang === 'en');
-        updateMuteButton();
+        updateMuteIcon();
       }
       document
         .getElementById('btnES')
@@ -1410,15 +1420,8 @@
       document.getElementById('year').textContent = new Date().getFullYear();
 
       /* ========================================================
-          SCRIPT DE AUDIO (LÓGICA BLINDADA)
-          ======================================================== */
-      const STREAM_URLS = [
-        'http://78.129.132.7:36073/stream',
-        'http://78.129.132.7:36073/;stream.mp3',
-        'http://radioemmanueledinburg.radiostream321.com/stream',
-      ];
-      const POPUP_URL = 'http://radioemmanueledinburg.radiostream321.com/';
-
+          SCRIPT DE AUDIO + METADATOS (ICECAST)
+         ======================================================== */
       const audio = document.getElementById('radioAudio');
       const nowText = document.getElementById('nowText');
       const statusBar = document.getElementById('statusBar');
@@ -1428,40 +1431,39 @@
       const vol = document.getElementById('vol');
       const popupContainer = document.getElementById('popupContainer');
 
-      let lastKnownState = 'idle';
+      let updateInterval;
+
       audio.volume = 1;
 
       audio.addEventListener('loadstart', () => setStatus('buffering'));
-      audio.addEventListener('waiting', () => setStatus('buffering'));
       audio.addEventListener('playing', () => {
         setStatus('playing');
         popupContainer.style.display = 'none';
+        startMetadataUpdater();
       });
-      audio.addEventListener('pause', () => setStatus('paused'));
+      audio.addEventListener('pause', () => {
+        setStatus('paused');
+        stopMetadataUpdater();
+      });
       audio.addEventListener('error', () => {
         setStatus('error');
         popupContainer.style.display = 'block';
       });
-      audio.addEventListener('ended', () => setStatus('idle'));
 
       function setStatus(state) {
-        lastKnownState = state;
-        statusBar.className = 'bar'; // Reset
+        statusBar.className = 'bar'; // Reset clases
         const isES = i18nState.lang === 'es';
 
         if (state === 'buffering') {
           statusBar.classList.add('buffering');
-          nowText.textContent = isES ? 'Conectando señal...' : 'Connecting...';
+          nowText.innerHTML = isES ? '📡 Conectando...' : '📡 Connecting...';
           toggleButtons(false);
         } else if (state === 'playing') {
           statusBar.classList.add('live');
-          nowText.textContent = isES
-            ? 'Reproduciendo: En Vivo'
-            : 'Now Playing: Live';
           toggleButtons(true);
         } else if (state === 'error') {
           statusBar.classList.add('error');
-          nowText.textContent = isES ? 'Error de conexión' : 'Connection Error';
+          nowText.textContent = isES ? '⚠️ Error conexión' : '⚠️ Server error';
           toggleButtons(false);
         } else {
           statusBar.classList.add('idle');
@@ -1480,60 +1482,89 @@
         }
       }
 
+      // Volumen
       vol.addEventListener('input', () => {
         audio.volume = Number(vol.value);
         if (audio.volume > 0) audio.muted = false;
-        updateMuteButton();
+        updateMuteIcon();
       });
       btnMute.addEventListener('click', () => {
         audio.muted = !audio.muted;
-        updateMuteButton();
+        updateMuteIcon();
       });
-      function updateMuteButton() {
+      function updateMuteIcon() {
+        const isMuted = audio.muted || audio.volume === 0;
         const label = i18n[i18nState.lang]['player.volume'];
         btnMute.innerHTML =
-          (audio.muted || audio.volume === 0 ? '🔇 ' : '🔊 ') +
-          `<span class="mini">${label}</span>`;
+          (isMuted ? '🔇 ' : '🔊 ') + `<span class="mini">${label}</span>`;
       }
 
+      // Play / Pause
+      btnPlay.addEventListener('click', async () => {
+        popupContainer.style.display = 'none';
+        setStatus('buffering');
+        audio.src = STREAM_URLS[0]; // Intenta HTTPS primero
+        try {
+          await audio.play();
+        } catch (e) {
+          console.warn('Fallo HTTPS directo, revisando...', e);
+        }
+      });
       btnPause.addEventListener('click', () => {
         audio.pause();
         audio.src = '';
         setStatus('idle');
       });
 
-      btnPlay.addEventListener('click', async () => {
-        popupContainer.style.display = 'none';
-        setStatus('buffering');
-        let success = false;
-        for (const url of STREAM_URLS) {
-          try {
-            console.log('Probando: ' + url);
-            audio.src = url;
-            await audio.play();
-            success = true;
-            break;
-          } catch (e) {
-            console.warn('Falló: ' + url);
+      // Dashboard Metadatos
+      function startMetadataUpdater() {
+        fetchMetadata();
+        updateInterval = setInterval(fetchMetadata, 10000);
+      }
+      function stopMetadataUpdater() {
+        clearInterval(updateInterval);
+      }
+
+      async function fetchMetadata() {
+        try {
+          const res = await fetch(STATS_URL + '?t=' + new Date().getTime());
+          const data = await res.json();
+          let source = data.icestats.source;
+          if (Array.isArray(source)) {
+            source =
+              source.find((s) => s.listenurl.endsWith(MOUNT_POINT)) ||
+              source[0];
           }
+
+          if (source) {
+            const songTitle =
+              source.title || source.server_name || 'Radio Emmanuel';
+            const listeners = source.listeners || 0;
+            const isES = i18nState.lang === 'es';
+            const listenersLabel = isES ? 'Oyentes' : 'Listeners';
+
+            nowText.innerHTML = `
+              <div style="display:flex; flex-direction:column; gap:2px;">
+                <span style="font-size:1.1em; color:var(--text);">${songTitle}</span>
+                <span style="font-size:0.8em; opacity:0.7; font-weight:normal;">
+                  🎧 ${listenersLabel}: <strong>${listeners}</strong>
+                </span>
+              </div>
+            `;
+            document.title = `▶ ${songTitle} | Radio Emmanuel`;
+          }
+        } catch (e) {
+          console.log('Dashboard error', e);
         }
-        if (!success) {
-          setStatus('error');
-          popupContainer.style.display = 'block';
-        }
-      });
+      }
 
       window.openPopupPlayer = function () {
+        // Usa la URL HTTP vieja o la que gustes para el popup
         window.open(
-          POPUP_URL,
-          'RadioEmmanuelPlayer',
-          'width=400,height=600,menubar=no,toolbar=no',
+          'http://radioemmanueledinburg.radiostream321.com/',
+          'RadioPlayer',
+          'width=400,height=600',
         );
-        const isES = i18nState.lang === 'es';
-        nowText.textContent = isES
-          ? 'Reproduciendo en ventana externa...'
-          : 'Playing in popup...';
-        popupContainer.style.display = 'none';
       };
 
       async function shareLive() {
@@ -1543,11 +1574,73 @@
         } catch (e) {}
       }
 
-      updateMuteButton();
+      /* ========================================================
+          FORMULARIO DE PETICIONES (AJAX + ASUNTO PERSONALIZADO)
+         ======================================================== */
+      const prayerForm = document.getElementById('prayerForm');
 
-      /* =========================================
-         SCRIPT DEL HERO SLIDER (AUTOMÁTICO)
-         ========================================= */
+      prayerForm.addEventListener('submit', async function (event) {
+        event.preventDefault(); // Evita recarga
+
+        const statusText = document.getElementById('formStatus');
+        const btn = document.getElementById('btnSendPrayer');
+        const originalBtnText = btn.innerHTML;
+        const nameInput = document.getElementById('nameInput');
+
+        // 1. Preparar datos
+        const formData = new FormData(prayerForm);
+
+        // --- TRUCO: PERSONALIZAR EL ASUNTO DEL CORREO ---
+        // Agregamos un campo oculto "_subject" dinámicamente con el nombre
+        formData.append(
+          '_subject',
+          `Petición de oración de: ${nameInput.value}`,
+        );
+        // ------------------------------------------------
+
+        // 2. Estado visual "Enviando"
+        btn.disabled = true;
+        btn.innerHTML = 'Enviando...';
+        statusText.style.display = 'none';
+
+        try {
+          // USAMOS LA URL QUE DEFINISTE AL INICIO DEL SCRIPT
+          const response = await fetch(FORMSPREE_ENDPOINT, {
+            method: 'POST',
+            body: formData,
+            headers: { Accept: 'application/json' },
+          });
+
+          if (response.ok) {
+            statusText.style.color = 'var(--primary2)';
+            statusText.innerText =
+              i18nState.lang === 'es'
+                ? '¡Gracias! Hemos recibido tu petición.'
+                : 'Thank you! We received your prayer request.';
+            statusText.style.display = 'block';
+            prayerForm.reset();
+          } else {
+            throw new Error('Error envío');
+          }
+        } catch (error) {
+          statusText.style.color = 'var(--status-error)';
+          statusText.innerText =
+            i18nState.lang === 'es'
+              ? 'Hubo un error. Intenta de nuevo.'
+              : 'There was a problem submitting.';
+          statusText.style.display = 'block';
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML = originalBtnText;
+          setTimeout(() => {
+            statusText.style.display = 'none';
+          }, 6000);
+        }
+      });
+
+      /* ========================================================
+          SLIDER HERO
+         ======================================================== */
       let currentSlide = 0;
       const slides = document.querySelectorAll('.hero-slide');
       const dots = document.querySelectorAll('.h-dot');
@@ -1561,28 +1654,24 @@
         slides[currentSlide].classList.add('active');
         dots[currentSlide].classList.add('active');
       }
-
       function nextSlide() {
         goToSlide(currentSlide + 1);
       }
-
       function startSlider() {
-        slideInterval = setInterval(nextSlide, 5000); // 5 Segundos
+        slideInterval = setInterval(nextSlide, 5000);
       }
-
       function stopSlider() {
         clearInterval(slideInterval);
       }
 
-      // Iniciar
       if (totalSlides > 0) startSlider();
-
-      // Pausar si el mouse está encima
       const sliderContainer = document.querySelector('.hero-slider-container');
       if (sliderContainer) {
         sliderContainer.addEventListener('mouseenter', stopSlider);
         sliderContainer.addEventListener('mouseleave', startSlider);
       }
+
+      updateMuteIcon();
     </script>
   </body>
 </html>
