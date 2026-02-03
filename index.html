@@ -4,23 +4,27 @@
     <meta name="referrer" content="no-referrer" />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Radio Emmanuel</title>
+    <title>Radio Emmanuel | En Vivo</title>
 
     <meta
       name="description"
-      content="Somos una radio cristiana bilingüe dedicada a compartir la palabra de Dios."
+      content="Escucha Radio Emmanuel en vivo desde Edinburg, TX. Palabra, adoración y fe para tu vida. Transmisión bilingüe 24/7."
     />
-    <meta name="theme-color" content="#d4eaf7" />
+    <meta name="theme-color" content="#0a4f70" />
 
-    <meta property="og:title" content="Radio Emmanuel" />
+    <meta property="og:title" content="Radio Emmanuel - Tira la red con fe" />
+    <meta
+      property="og:description"
+      content="Radio cristiana bilingüe. Escucha en vivo y conéctate."
+    />
     <meta property="og:type" content="website" />
-    <meta name="twitter:card" content="summary_large_image" />
+    <meta property="og:url" content="https://radioemmanuel.github.io/" />
+    <meta property="og:image" content="assets/og-image.jpg" />
+
     <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
 
     <style>
-      /* =========================================================
-          ☀️ TEMA DÍA: "CIELO DE MAÑANA"
-          ========================================================= */
+      /* VARIABLES */
       :root {
         --primary: #0a4f70;
         --primary2: #1e6b91;
@@ -31,7 +35,9 @@
         --bg: #eaf6fa;
         --surface: rgba(255, 255, 255, 0.65);
         --card: rgba(255, 255, 255, 0.75);
-        --header-bg: rgba(235, 247, 252, 0.85);
+        --header-bg: rgba(235, 247, 252, 0.95); /* Más opacidad */
+        --utility-bg: #052c42; /* Azul muy oscuro para contraste alto */
+        --utility-text: #ffffff;
         --text: #1a3c4d;
         --muted: rgba(26, 60, 77, 0.7);
         --stroke: rgba(255, 255, 255, 0.6);
@@ -50,8 +56,6 @@
         --status-live: #5ecde0;
         --status-error: #ff6b6b;
       }
-
-      /* TEMA NOCHE */
       [data-theme='dark'] {
         --primary: #7dd3fc;
         --primary2: #0ea5e9;
@@ -60,7 +64,9 @@
         --bg: #020617;
         --surface: rgba(15, 23, 42, 0.6);
         --card: rgba(30, 41, 59, 0.6);
-        --header-bg: rgba(2, 6, 23, 0.85);
+        --header-bg: rgba(2, 6, 23, 0.95);
+        --utility-bg: #000000;
+        --utility-text: #e2e8f0;
         --text: #f1f5f9;
         --muted: rgba(148, 163, 184, 0.65);
         --stroke: rgba(255, 255, 255, 0.12);
@@ -94,6 +100,7 @@
         background-size: cover;
         color: var(--text);
         transition: color 0.3s ease;
+        padding-bottom: 80px;
       }
       a {
         color: inherit;
@@ -105,14 +112,53 @@
         padding: 0 16px;
       }
 
-      /* HEADER */
-      header {
+      /* --- CONTENEDOR FIX (PEGAJOSO) --- */
+      /* Esto agrupa la barra de utilidad y el header para que bajen juntos */
+      .sticky-header-group {
         position: sticky;
         top: 0;
-        z-index: 50;
+        z-index: 1000;
+        width: 100%;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      /* BARRA SUPERIOR (Mejorada) */
+      .top-utility-bar {
+        background-color: var(--utility-bg);
+        color: var(--utility-text);
+        font-size: 13px; /* Letra un poco más grande */
+        font-weight: 600; /* Más peso para que se note */
+        padding: 8px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .utility-inner {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .utility-info {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+        font-family: monospace, sans-serif;
+      }
+      .weather-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-weight: bold;
+        color: #fff;
+      }
+
+      /* HEADER (Dentro del grupo sticky) */
+      header {
         background: var(--header-bg);
         backdrop-filter: blur(12px);
         border-bottom: 1px solid var(--stroke2);
+        /* Ya no lleva position: sticky aquí porque el padre lo controla */
       }
       .topbar {
         display: flex;
@@ -163,10 +209,13 @@
         padding: 8px 10px;
         border-radius: 12px;
         font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
       }
       nav a:hover {
         background: rgba(102, 191, 242, 0.16);
         opacity: 1;
+        color: var(--primary);
       }
       .controls {
         display: flex;
@@ -207,7 +256,7 @@
         color: var(--text);
       }
 
-      /* HERO & PLAYER */
+      /* HERO */
       .hero {
         padding: 46px 0 24px;
       }
@@ -220,22 +269,6 @@
         position: relative;
         backdrop-filter: blur(5px);
       }
-      .heroCard::after {
-        content: '';
-        position: absolute;
-        inset: auto 0 0 0;
-        height: 4px;
-        background: linear-gradient(
-          90deg,
-          transparent,
-          rgba(199, 171, 102, 0.8),
-          rgba(102, 191, 242, 0.8),
-          transparent
-        );
-        opacity: 0.8;
-      }
-
-      /* Grid Original del Hero */
       .heroInner {
         position: relative;
         padding: 30px;
@@ -244,8 +277,6 @@
         gap: 22px;
         align-items: center;
       }
-
-      /* ESTILOS DEL SLIDER */
       .hero-slider-container {
         position: relative;
         min-height: 320px;
@@ -289,7 +320,6 @@
         width: 24px;
         border-radius: 10px;
       }
-
       .kicker {
         display: flex;
         gap: 10px;
@@ -328,7 +358,6 @@
         font-size: 16px;
         max-width: 72ch;
       }
-
       .ctaRow {
         display: flex;
         gap: 12px;
@@ -358,9 +387,6 @@
         border-color: rgba(102, 191, 242, 0.4);
         color: var(--text);
       }
-      .btn.primary:hover {
-        background: rgba(102, 191, 242, 0.3);
-      }
       .btn.gold {
         background: linear-gradient(180deg, #d4b873, #b59850);
         border-color: rgba(199, 171, 102, 0.55);
@@ -376,6 +402,7 @@
         color: var(--muted);
       }
 
+      /* PLAYER */
       .playerBox {
         border: 1px solid var(--stroke2);
         background: var(--card);
@@ -424,8 +451,6 @@
         margin: 6px 0 12px;
         min-height: 1.2em;
       }
-
-      /* Barra de Progreso */
       .progress {
         height: 10px;
         border-radius: 999px;
@@ -496,7 +521,6 @@
           background-position: 0% 50%;
         }
       }
-
       .playerBtns {
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;
@@ -510,17 +534,12 @@
         font-size: 13px;
         white-space: nowrap;
       }
-
       .audioWrap {
         margin-top: 10px;
         border: 1px solid var(--stroke2);
         background: var(--surface);
         border-radius: 16px;
         padding: 10px;
-      }
-      audio {
-        width: 100%;
-        height: 0;
       }
       .volRow {
         display: flex;
@@ -533,7 +552,43 @@
         padding: 0;
       }
 
-      /* SECTIONS */
+      /* MINI PLAYER */
+      .mini-player {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background: var(--header-bg);
+        backdrop-filter: blur(15px);
+        padding: 12px;
+        border-top: 1px solid var(--stroke);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.1);
+        z-index: 2000;
+        transform: translateY(100%);
+        transition: transform 0.3s ease;
+      }
+      .mini-player.visible {
+        transform: translateY(0);
+      }
+      .mini-info {
+        display: flex;
+        flex-direction: column;
+        font-size: 13px;
+        padding-left: 10px;
+      }
+      .mini-title {
+        font-weight: bold;
+        color: var(--text);
+      }
+      .mini-status {
+        color: var(--accent2);
+        font-size: 11px;
+      }
+
+      /* CONTENT */
       section {
         padding: 18px 0;
       }
@@ -568,7 +623,6 @@
         color: var(--muted);
         font-size: 13px;
       }
-
       .list {
         display: grid;
         gap: 12px;
@@ -582,6 +636,12 @@
         justify-content: space-between;
         gap: 12px;
         align-items: flex-start;
+        transition: all 0.3s;
+      }
+      .item.active-show {
+        border: 2px solid var(--accent);
+        background: rgba(94, 205, 224, 0.1);
+        transform: scale(1.02);
       }
       .item strong {
         display: block;
@@ -592,44 +652,6 @@
         font-size: 13px;
         margin-top: 4px;
       }
-
-      /* FORMS */
-      label {
-        display: block;
-        font-size: 13px;
-        color: var(--muted);
-        margin: 10px 0 6px;
-        font-weight: 900;
-      }
-      input,
-      textarea,
-      select {
-        width: 100%;
-        padding: 12px 12px;
-        border-radius: 14px;
-        border: 1px solid var(--stroke);
-        background: rgba(255, 255, 255, 0.05);
-        color: var(--text);
-        outline: none;
-      }
-      input:focus,
-      textarea:focus,
-      select:focus {
-        background: var(--surface);
-        box-shadow: 0 0 0 4px rgba(102, 191, 242, 0.25);
-        border-color: rgba(102, 191, 242, 0.55);
-      }
-      textarea {
-        min-height: 110px;
-        resize: vertical;
-      }
-      .row {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 12px;
-      }
-
-      /* FOOTER */
       footer {
         padding: 26px 0 36px;
         color: var(--muted);
@@ -643,8 +665,67 @@
         flex-wrap: wrap;
         font-size: 13px;
       }
+      .dev-credit {
+        text-align: center;
+        margin-top: 20px;
+        padding-top: 15px;
+        border-top: 1px solid var(--stroke2);
+        font-size: 13px;
+        color: var(--muted);
+        opacity: 0.8;
+      }
+      .dev-credit strong {
+        color: var(--text);
+        font-weight: 900;
+      }
+      .ubicacion-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-top: 16px;
+        padding-top: 16px;
+        border-top: 1px solid var(--stroke2);
+      }
+      .direccion-info {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        font-size: 14px;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+      .mapa-container {
+        flex: 1;
+        height: 140px;
+        border-radius: 14px;
+        overflow: hidden;
+        border: 1px solid var(--stroke2);
+        box-shadow: var(--shadow2);
+        background: var(--surface);
+      }
+      input,
+      textarea,
+      select {
+        width: 100%;
+        padding: 12px;
+        border-radius: 14px;
+        border: 1px solid var(--stroke);
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--text);
+        outline: none;
+        display: block;
+        margin-top: 6px;
+      }
+      input:focus,
+      textarea:focus,
+      select:focus {
+        background: var(--surface);
+        box-shadow: 0 0 0 4px rgba(102, 191, 242, 0.25);
+        border-color: rgba(102, 191, 242, 0.55);
+      }
 
-      /* RESPONSIVE */
       @media (max-width: 900px) {
         .heroInner {
           grid-template-columns: 1fr;
@@ -660,39 +741,114 @@
           grid-template-columns: 1fr;
         }
       }
+      @media (max-width: 600px) {
+        .ubicacion-footer {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        .direccion-info,
+        .mapa-container {
+          width: 100%;
+          flex: auto;
+        }
+        .mapa-container {
+          margin-top: 12px;
+          height: 160px;
+        }
+        .utility-info {
+          gap: 8px;
+          font-size: 11px;
+        }
+      }
     </style>
   </head>
 
   <body>
-    <header>
-      <div class="wrap topbar">
-        <div class="brand">
-          <div class="logo">RE</div>
-          <div>
-            <div style="font-weight: 950; letter-spacing: 0.3px">
-              Radio Emmanuel
-            </div>
-            <div class="mini" data-i18n="header.subtitle">
-              Radio cristiana bilingüe • Edinburg, TX
-            </div>
+    <div class="sticky-header-group">
+      <div class="top-utility-bar">
+        <div class="wrap utility-inner">
+          <div class="utility-info">
+            <span id="dateDisplay">Cargando fecha...</span>
           </div>
-        </div>
-        <nav>
-          <a href="#live" data-i18n="nav.live">En vivo</a>
-          <a href="#shows" data-i18n="nav.shows">Programas</a>
-          <a href="#location" data-i18n="nav.location">Ubicación</a>
-          <a href="#prayer" data-i18n="nav.prayer">Peticiones</a>
-          <a href="#connect" data-i18n="nav.connect">Conecta</a>
-        </nav>
-        <div class="controls">
-          <button class="theme-toggle" id="themeBtn">☀️</button>
-          <div class="lang">
-            <div class="pill" id="btnES">ES</div>
-            <div class="pill active" id="btnEN">EN</div>
+          <div class="utility-info">
+            <span class="weather-badge" id="weatherDisplay">🌤️ --°C</span>
+            <span style="opacity: 0.9" data-i18n="header.location"
+              >Edinburg, TX</span
+            >
           </div>
         </div>
       </div>
-    </header>
+
+      <header>
+        <div class="wrap topbar">
+          <div class="brand">
+            <div class="logo">RE</div>
+            <div>
+              <div style="font-weight: 950; letter-spacing: 0.3px">
+                Radio Emmanuel
+              </div>
+              <div class="mini" data-i18n="header.subtitle">
+                Radio cristiana bilingüe
+              </div>
+            </div>
+          </div>
+          <nav>
+            <a
+              onclick="
+                document
+                  .getElementById('live')
+                  .scrollIntoView({ behavior: 'smooth' })
+              "
+              data-i18n="nav.live"
+              >En vivo</a
+            >
+            <a
+              onclick="
+                document
+                  .getElementById('shows')
+                  .scrollIntoView({ behavior: 'smooth' })
+              "
+              data-i18n="nav.shows"
+              >Programas</a
+            >
+            <a
+              onclick="
+                document
+                  .getElementById('location')
+                  .scrollIntoView({ behavior: 'smooth' })
+              "
+              data-i18n="nav.location"
+              >Ubicación</a
+            >
+            <a
+              onclick="
+                document
+                  .getElementById('prayer')
+                  .scrollIntoView({ behavior: 'smooth' })
+              "
+              data-i18n="nav.prayer"
+              >Peticiones</a
+            >
+            <a
+              onclick="
+                document
+                  .getElementById('connect')
+                  .scrollIntoView({ behavior: 'smooth' })
+              "
+              data-i18n="nav.connect"
+              >Conecta</a
+            >
+          </nav>
+          <div class="controls">
+            <button class="theme-toggle" id="themeBtn">☀️</button>
+            <div class="lang">
+              <div class="pill" id="btnES">ES</div>
+              <div class="pill active" id="btnEN">EN</div>
+            </div>
+          </div>
+        </div>
+      </header>
+    </div>
 
     <main class="wrap">
       <div class="hero">
@@ -739,20 +895,18 @@
                   </button>
                 </div>
               </div>
-
               <div class="hero-slide">
                 <div class="kicker">
                   <span class="tag main" data-i18n="hero.s2.tag"
                     >DOMINGOS 10AM</span
-                  >
-                  <span class="mini" data-i18n="hero.s2.mini"
+                  ><span class="mini" data-i18n="hero.s2.mini"
                     >Ven con tu familia</span
                   >
                 </div>
                 <h1 data-i18n="hero.s2.title">Una casa de puertas abiertas.</h1>
                 <p class="sub" data-i18n="hero.s2.sub">
                   Te invitamos a nuestros servicios presenciales en el Templo
-                  Emmanuel. Un tiempo de milagros y renovación.
+                  Emmanuel.
                 </p>
                 <div class="ctaRow">
                   <button
@@ -767,18 +921,17 @@
                   </button>
                 </div>
               </div>
-
               <div class="hero-slide">
                 <div class="kicker">
-                  <span class="tag" data-i18n="hero.s3.tag">NUEVO</span>
-                  <span class="mini" data-i18n="hero.s3.mini"
+                  <span class="tag" data-i18n="hero.s3.tag">NUEVO</span
+                  ><span class="mini" data-i18n="hero.s3.mini"
                     >Llévanos contigo</span
                   >
                 </div>
                 <h1 data-i18n="hero.s3.title">La radio que edifica tu vida.</h1>
                 <p class="sub" data-i18n="hero.s3.sub">
-                  Síguenos en nuestras redes sociales o envíanos un mensaje de
-                  WhatsApp para pedir tu alabanza favorita.
+                  Síguenos en nuestras redes sociales o pide tu alabanza por
+                  WhatsApp.
                 </p>
                 <div class="ctaRow">
                   <button
@@ -793,11 +946,10 @@
                   </button>
                 </div>
               </div>
-
               <div class="hero-dots">
-                <span class="h-dot active" onclick="goToSlide(0)"></span>
-                <span class="h-dot" onclick="goToSlide(1)"></span>
-                <span class="h-dot" onclick="goToSlide(2)"></span>
+                <span class="h-dot active" onclick="goToSlide(0)"></span
+                ><span class="h-dot" onclick="goToSlide(1)"></span
+                ><span class="h-dot" onclick="goToSlide(2)"></span>
               </div>
             </div>
 
@@ -824,8 +976,8 @@
                   referrerpolicy="no-referrer"
                 ></audio>
                 <div class="volRow">
-                  <span style="font-weight: 900; font-size: 12px">🔊</span>
-                  <input
+                  <span style="font-weight: 900; font-size: 12px">🔊</span
+                  ><input
                     id="vol"
                     type="range"
                     min="0"
@@ -859,7 +1011,6 @@
                     background: #ff4d4d;
                     color: white;
                     justify-content: center;
-                    border-color: #ff3333;
                   "
                   onclick="window.openPopupPlayer()"
                 >
@@ -887,43 +1038,49 @@
         <div class="grid2">
           <div class="card">
             <div class="list">
-              <div class="item">
+              <div class="item" id="prog-sun">
                 <div>
                   <strong data-i18n="shows.s0.name">Dios con nosotros</strong>
                   <div class="meta" data-i18n="shows.s0.meta">
                     Domingo • 10:00 AM • Pastor Daniel Ortiz
                   </div>
                 </div>
-                <span class="tag main" data-i18n="shows.tagMain"
+                <span class="tag main" id="tag-sun" data-i18n="shows.tagMain"
                   >PRINCIPAL</span
                 >
               </div>
-              <div class="item">
+              <div class="item" id="prog-mon">
                 <div>
                   <strong data-i18n="shows.s1.name">Palabra Viva</strong>
                   <div class="meta" data-i18n="shows.s1.meta">
                     Lunes • 7:00 PM • Pastor Daniel Ortiz
                   </div>
                 </div>
-                <span class="tag" data-i18n="shows.tagLive">EN VIVO</span>
+                <span class="tag" id="tag-mon" data-i18n="shows.tagLive"
+                  >EN VIVO</span
+                >
               </div>
-              <div class="item">
+              <div class="item" id="prog-wed">
                 <div>
                   <strong data-i18n="shows.s2.name">Noche de Adoración</strong>
                   <div class="meta" data-i18n="shows.s2.meta">
                     Miércoles • 8:00 PM • Equipo Radio Emmanuel
                   </div>
                 </div>
-                <span class="tag" data-i18n="shows.tagMusic">Adoración</span>
+                <span class="tag" id="tag-wed" data-i18n="shows.tagMusic"
+                  >Adoración</span
+                >
               </div>
-              <div class="item">
+              <div class="item" id="prog-fri">
                 <div>
                   <strong data-i18n="shows.s3.name">Fe y Familia</strong>
                   <div class="meta" data-i18n="shows.s3.meta">
                     Viernes • 6:00 PM • Invitados especiales
                   </div>
                 </div>
-                <span class="tag" data-i18n="shows.tagTalk">Charlas</span>
+                <span class="tag" id="tag-fri" data-i18n="shows.tagTalk"
+                  >Charlas</span
+                >
               </div>
             </div>
           </div>
@@ -931,17 +1088,6 @@
           <div class="card" id="location">
             <div class="sectionTitle">
               <h2 data-i18n="loc.title">Horarios y Ubicación</h2>
-              <p
-                style="
-                  color: var(--gold);
-                  font-weight: 900;
-                  font-size: 15px;
-                  margin: 0;
-                  opacity: 1;
-                "
-              >
-                📍 <span data-i18n="loc.temple">Templo Emmanuel</span>
-              </p>
             </div>
             <div class="list">
               <div class="item">
@@ -958,69 +1104,27 @@
                 </div>
                 <span class="tag" data-i18n="loc.prayer">Oración</span>
               </div>
-
-              <div
-                style="
-                  display: grid;
-                  grid-template-columns: 1fr 1fr;
-                  gap: 12px;
-                  margin-top: 4px;
-                "
-              >
-                <div
-                  style="
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: center;
-                    font-size: 13px;
-                    color: var(--muted);
-                  "
-                >
-                  <div
-                    style="
-                      margin-bottom: 4px;
-                      font-weight: 900;
-                      color: var(--text);
-                    "
-                    data-i18n="loc.addressLabel"
-                  >
-                    Dirección:
-                  </div>
-                  <div style="line-height: 1.4">
-                    712 Kenyond Rd,<br />Edinburg, Texas.
-                  </div>
+              <div class="ubicacion-footer">
+                <div class="direccion-info">
+                  <span class="direccion-label" data-i18n="loc.addressLabel"
+                    >Dirección:</span
+                  ><span>712 Kenyond Rd,<br />Edinburg, Texas.</span>
                   <a
                     href="https://www.google.com/maps/search/?api=1&query=712+Kenyond+Rd,+Edinburg,+Texas"
                     target="_blank"
-                    style="
-                      margin-top: 8px;
-                      color: var(--primary2);
-                      font-weight: bold;
-                      font-size: 12px;
-                      display: flex;
-                      align-items: center;
-                      gap: 4px;
-                    "
+                    class="mapa-link"
+                    ><span data-i18n="loc.mapBtn">Ver en Mapa</span> ↗</a
                   >
-                    <span data-i18n="loc.mapBtn">Ver en Mapa</span> ↗
-                  </a>
                 </div>
-                <div
-                  style="
-                    border-radius: 12px;
-                    overflow: hidden;
-                    border: 1px solid var(--stroke2);
-                  "
-                >
+                <div class="mapa-container">
                   <iframe
-                    src="https://www.google.com/maps?q=712+Kenyond+Rd,+Edinburg,+Texas&output=embed"
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3576.478967679383!2d-98.1837482236688!3d26.31109677701198!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8665a6c5f0f9b6b9%3A0x6b8b8b8b8b8b8b8b!2s712%20Kenyon%20Rd%2C%20Edinburg%2C%20TX%2078542%2C%20USA!5e0!3m2!1sen!2smx!4v1700000000000!5m2!1sen!2smx"
                     width="100%"
                     height="100%"
-                    style="border: 0; min-height: 100px; opacity: 0.8"
+                    style="border: 0"
                     allowfullscreen=""
                     loading="lazy"
-                  >
-                  </iframe>
+                  ></iframe>
                 </div>
               </div>
             </div>
@@ -1032,37 +1136,24 @@
         <div class="card">
           <div class="sectionTitle">
             <h2 data-i18n="prayer.title">Peticiones de oración</h2>
-            <p class="hint" data-i18n="prayer.hint">Estamos orando por ti</p>
           </div>
           <form id="prayerForm">
+            <input type="text" name="_gotcha" style="display: none" />
             <div class="row">
               <div>
-                <label data-i18n="prayer.nameLabel">Nombre</label>
-                <input
-                  type="text"
-                  name="name"
-                  id="nameInput"
-                  placeholder="Nombre"
-                  required
-                  data-i18n-placeholder="prayer.namePlaceholder"
-                />
+                <label data-i18n="prayer.nameLabel">Nombre</label
+                ><input type="text" name="name" id="nameInput" required />
               </div>
               <div>
-                <label data-i18n="prayer.langLabel">Idioma</label>
-                <select name="language">
+                <label data-i18n="prayer.langLabel">Idioma</label
+                ><select name="language">
                   <option value="es">ES</option>
-                  <option value="en" selected>EN</option>
+                  <option value="en">EN</option>
                 </select>
               </div>
             </div>
-            <label data-i18n="prayer.msgLabel">Tu petición</label>
-            <textarea
-              name="message"
-              placeholder="Escribe tu petición de oración..."
-              required
-              data-i18n-placeholder="prayer.msgPlaceholder"
-            ></textarea>
-
+            <label data-i18n="prayer.msgLabel">Tu petición</label
+            ><textarea name="message" required></textarea>
             <p
               id="formStatus"
               class="mini"
@@ -1073,17 +1164,10 @@
                 font-weight: bold;
               "
             ></p>
-
             <div style="margin-top: 12px">
               <button class="btn gold" type="submit" id="btnSendPrayer">
                 🙏 <span data-i18n="prayer.send">Enviar</span>
               </button>
-              <span
-                class="mini"
-                style="margin-left: 10px"
-                data-i18n="prayer.note"
-                >Privado y respetuoso.</span
-              >
             </div>
           </form>
         </div>
@@ -1091,82 +1175,32 @@
         <div class="card" id="connect">
           <div class="sectionTitle">
             <h2 data-i18n="connect.title">Conecta</h2>
-            <p class="hint" data-i18n="connect.hint">Edinburg, Texas</p>
           </div>
           <div class="list">
             <div class="item">
               <div>
                 <strong data-i18n="connect.whats">WhatsApp</strong>
-                <div class="meta" data-i18n="connect.whatsMeta">
-                  Agregar número después
+                <div class="meta">
+                  <a
+                    href="https://wa.me/19561234567"
+                    target="_blank"
+                    data-i18n="connect.whatsMeta"
+                    >Enviar Mensaje</a
+                  >
                 </div>
               </div>
-              <span class="tag">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  width="18"
-                  height="18"
-                  fill="currentColor"
-                >
-                  <path
-                    d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"
-                  />
-                </svg>
-              </span>
             </div>
-
             <div class="item">
               <div>
-                <strong data-i18n="connect.email">Correo</strong>
-                <div class="meta">temploemmanuel712@gmail.com</div>
-              </div>
-              <span class="tag">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  width="18"
-                  height="18"
-                  fill="currentColor"
-                >
-                  <path
-                    d="M1.5 8.67v8.58a3 3 0 003 3h15a3 3 0 003-3V8.67l-8.928 5.493a3 3 0 01-3.144 0L1.5 8.67z"
-                  />
-                  <path
-                    d="M22.5 6.908V6.75a3 3 0 00-3-3h-15a3 3 0 00-3 3v.158l9.714 5.978a1.5 1.5 0 001.572 0L22.5 6.908z"
-                  />
-                </svg>
-              </span>
-            </div>
-
-            <div class="item">
-              <div>
-                <strong data-i18n="connect.social">Redes</strong>
-                <div class="meta" data-i18n="connect.socialMeta">
-                  Links de Facebook / Instagram después
+                <strong>Facebook</strong>
+                <div class="meta">
+                  <a href="https://facebook.com/RadioEmmanuel" target="_blank"
+                    >/RadioEmmanuel</a
+                  >
                 </div>
               </div>
-              <span class="tag">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  width="18"
-                  height="18"
-                  fill="currentColor"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M15.75 4.5a3 3 0 11.825 2.066l-8.421 4.679a3.002 3.002 0 010 1.51l8.421 4.679a3 3 0 11-.729 1.31l-8.421-4.678a3 3 0 110-4.132l8.421-4.679a3 3 0 01-.096-.755z"
-                    clip-rule="evenodd"
-                  />
-                </svg>
-              </span>
             </div>
           </div>
-          <p class="mini" style="margin-top: 12px" data-i18n="connect.helper">
-            Podemos agregar un botón de “Compartir” para enviar el link del En
-            Vivo por WhatsApp al instante.
-          </p>
           <div style="margin-top: 12px">
             <button class="btn primary" type="button" onclick="shareLive()">
               🔗 <span data-i18n="connect.share">Compartir En Vivo</span>
@@ -1179,141 +1213,59 @@
         <div class="wrap foot">
           <div>© <span id="year"></span> <strong>Radio Emmanuel</strong></div>
           <div data-i18n="footer.note">
-            Marca independiente • Diseño propio • Contenido bilingüe
+            Marca independiente • Contenido bilingüe
           </div>
+        </div>
+        <div class="wrap dev-credit" data-i18n="footer.credit">
+          Diseño y Desarrollo por <strong>Ing. Santiago Martinez</strong> 💻
         </div>
       </footer>
     </main>
 
-    <script>
-      /* ========================================================
-          CONFIGURACIONES PRINCIPALES (YA ACTUALIZADAS)
-         ======================================================== */
-      // 1. TU LINK DE FORMSPREE
-      const FORMSPREE_ENDPOINT = 'https://formspree.io/f/maqjaqbg';
+    <div class="mini-player" id="miniPlayer">
+      <div style="display: flex; align-items: center; gap: 10px">
+        <button
+          class="btn primary"
+          id="btnMiniPlay"
+          onclick="document.getElementById('btnPlay').click()"
+          style="padding: 8px 14px; border-radius: 50px"
+        >
+          ▶
+        </button>
+        <div class="mini-info">
+          <span class="mini-title">Radio Emmanuel</span>
+          <span class="mini-status" data-i18n="player.status">● EN VIVO</span>
+        </div>
+      </div>
+      <button
+        class="btn"
+        onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
+        style="padding: 5px 10px; font-size: 12px"
+      >
+        ⬆
+      </button>
+    </div>
 
-      // 2. TU ENLACE RÁPIDO DE CLOUDFLARE (Copiado de tu terminal)
+    <script>
+      /* CONFIGURACIÓN */
+      const FORMSPREE_ENDPOINT = 'https://formspree.io/f/maqjaqbg';
       const RADIO_HOST = 'sept-pottery-capabilities-applying.trycloudflare.com';
       const MOUNT_POINT = '/stream';
-
-      // Construimos las URLs automáticamente
       const STREAM_URLS = [
         `https://${RADIO_HOST}${MOUNT_POINT}`,
         `https://${RADIO_HOST}${MOUNT_POINT}.mp3`,
       ];
-
-      // URL para obtener datos (Título, Oyentes) del Icecast JSON
       const STATS_URL = `https://${RADIO_HOST}/status-json.xsl`;
+      const WEATHER_API =
+        'https://api.open-meteo.com/v1/forecast?latitude=26.30&longitude=-98.16&current_weather=true';
 
-      /* ========================================================
-          SCRIPT DE IDIOMA Y TEMA
-         ======================================================== */
-      const themeBtn = document.getElementById('themeBtn');
-      const htmlEl = document.documentElement;
-      const savedTheme = localStorage.getItem('theme');
-
-      if (
-        savedTheme === 'dark' ||
-        (!savedTheme &&
-          window.matchMedia('(prefers-color-scheme: dark)').matches)
-      ) {
-        htmlEl.setAttribute('data-theme', 'dark');
-        themeBtn.textContent = '🌙';
-      } else {
-        htmlEl.setAttribute('data-theme', 'light');
-        themeBtn.textContent = '☀️';
-      }
-
-      themeBtn.addEventListener('click', () => {
-        const current = htmlEl.getAttribute('data-theme');
-        const newTheme = current === 'dark' ? 'light' : 'dark';
-        htmlEl.setAttribute('data-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
-        themeBtn.textContent = newTheme === 'dark' ? '🌙' : '☀️';
-      });
-
-      // DICCIONARIO
+      /* =========================================
+         SISTEMA DE TRADUCCIÓN
+         ========================================= */
       const i18n = {
-        en: {
-          'header.subtitle': 'Bilingual Christian Radio • Edinburg, TX',
-          'nav.live': 'Live',
-          'nav.shows': 'Shows',
-          'nav.location': 'Location',
-          'nav.prayer': 'Prayer Requests',
-          'nav.connect': 'Connect',
-          'hero.liveBadge': 'LIVE',
-          'hero.kicker': 'Cast the net in faith',
-          'hero.title': 'Word and worship, every day.',
-          'hero.subtitle':
-            'We are a bilingual Christian radio dedicated to sharing the Word of God and messages of faith.',
-          'hero.ctaLive': 'Listen Live',
-          'hero.ctaLocation': 'See Location',
-          'hero.s2.tag': 'SUNDAYS 10AM',
-          'hero.s2.mini': 'Bring your family',
-          'hero.s2.title': 'A house of open doors.',
-          'hero.s2.sub':
-            'We invite you to our in-person services at Emmanuel Temple. A time of miracles and renewal.',
-          'hero.s2.btn': 'Get Directions',
-          'hero.s3.tag': 'NEW',
-          'hero.s3.mini': 'Take us with you',
-          'hero.s3.title': 'The radio that builds your life.',
-          'hero.s3.sub':
-            'Follow us on social media or send us a WhatsApp message to request your favorite song.',
-          'hero.s3.btn': 'Send WhatsApp',
-          'player.status': 'LIVE',
-          'player.quality': 'Mobile Friendly',
-          'player.now': 'Ready to play',
-          'player.play': 'Play',
-          'player.pause': 'Pause',
-          'player.volume': 'Volume',
-          'player.popup': 'Open Secure Player',
-          'player.helper': 'Connected to Server (HTTPS).',
-          'shows.title': 'Shows',
-          'shows.hint': 'Schedule and hosts (placeholder data)',
-          'shows.s0.name': 'God with Us',
-          'shows.s0.meta': 'Sunday • 10:00 AM • Pastor Daniel Ortiz',
-          'shows.tagMain': 'MAIN',
-          'shows.s1.name': 'Living Word',
-          'shows.s1.meta': 'Monday • 7:00 PM • Pastor Daniel Ortiz',
-          'shows.s2.name': 'Worship Night',
-          'shows.s2.meta': 'Wednesday • 8:00 PM • Radio Emmanuel Team',
-          'shows.s3.name': 'Faith & Family',
-          'shows.s3.meta': 'Friday • 6:00 PM • Special Guests',
-          'shows.tagLive': 'LIVE',
-          'shows.tagMusic': 'Worship',
-          'shows.tagTalk': 'Talk',
-          'loc.title': 'Schedule & Location',
-          'loc.temple': 'Emmanuel Temple',
-          'loc.sunday': 'Sunday',
-          'loc.worship': 'Worship',
-          'loc.wednesday': 'Wednesday',
-          'loc.prayer': 'Prayer',
-          'loc.addressLabel': 'Address:',
-          'loc.mapBtn': 'Open Map',
-          'prayer.title': 'Prayer Requests',
-          'prayer.hint': 'We are praying for you',
-          'prayer.nameLabel': 'Name',
-          'prayer.langLabel': 'Language',
-          'prayer.msgLabel': 'Your request',
-          'prayer.send': 'Send',
-          'prayer.note': 'Private and respectful.',
-          'prayer.namePlaceholder': 'Name',
-          'prayer.msgPlaceholder': 'Type your prayer request...',
-          'connect.title': 'Connect',
-          'connect.hint': 'Edinburg, Texas',
-          'connect.whats': 'WhatsApp',
-          'connect.whatsMeta': 'Add number later',
-          'connect.email': 'Email',
-          'connect.social': 'Social',
-          'connect.socialMeta': 'Facebook / Instagram links later',
-          'connect.helper':
-            'We can add a “Share” button so people can send the Live link on WhatsApp instantly.',
-          'connect.share': 'Share Live Link',
-          'footer.note':
-            'Independent brand • Unique design • Bilingual content',
-        },
         es: {
-          'header.subtitle': 'Radio cristiana bilingüe • Edinburg, TX',
+          'header.subtitle': 'Radio cristiana bilingüe',
+          'header.location': 'Edinburg, TX',
           'nav.live': 'En vivo',
           'nav.shows': 'Programas',
           'nav.location': 'Ubicación',
@@ -1330,13 +1282,13 @@
           'hero.s2.mini': 'Ven con tu familia',
           'hero.s2.title': 'Una casa de puertas abiertas.',
           'hero.s2.sub':
-            'Te invitamos a nuestros servicios presenciales en el Templo Emmanuel. Un tiempo de milagros y renovación.',
+            'Te invitamos a nuestros servicios presenciales en el Templo Emmanuel.',
           'hero.s2.btn': 'Ver cómo llegar',
           'hero.s3.tag': 'NUEVO',
           'hero.s3.mini': 'Llévanos contigo',
           'hero.s3.title': 'La radio que edifica tu vida.',
           'hero.s3.sub':
-            'Síguenos en nuestras redes sociales o envíanos un mensaje de WhatsApp para pedir tu alabanza favorita.',
+            'Síguenos en nuestras redes sociales o pide tu alabanza por WhatsApp.',
           'hero.s3.btn': 'Enviar WhatsApp',
           'player.status': 'EN VIVO',
           'player.quality': 'Compatible móvil',
@@ -1347,21 +1299,20 @@
           'player.popup': 'Abrir Reproductor Seguro',
           'player.helper': 'Conectado al servidor propio (HTTPS).',
           'shows.title': 'Programas',
-          'shows.hint': 'Horario y responsables (datos de ejemplo)',
+          'shows.hint': 'Horario y responsables',
           'shows.s0.name': 'Dios con nosotros',
           'shows.s0.meta': 'Domingo • 10:00 AM • Pastor Daniel Ortiz',
           'shows.tagMain': 'PRINCIPAL',
           'shows.s1.name': 'Palabra Viva',
           'shows.s1.meta': 'Lunes • 7:00 PM • Pastor Daniel Ortiz',
+          'shows.tagLive': 'EN VIVO',
           'shows.s2.name': 'Noche de Adoración',
           'shows.s2.meta': 'Miércoles • 8:00 PM • Equipo Radio Emmanuel',
+          'shows.tagMusic': 'Adoración',
           'shows.s3.name': 'Fe y Familia',
           'shows.s3.meta': 'Viernes • 6:00 PM • Invitados especiales',
-          'shows.tagLive': 'EN VIVO',
-          'shows.tagMusic': 'Adoración',
           'shows.tagTalk': 'Charlas',
           'loc.title': 'Horarios y Ubicación',
-          'loc.temple': 'Templo Emmanuel',
           'loc.sunday': 'Domingo',
           'loc.worship': 'Culto',
           'loc.wednesday': 'Miércoles',
@@ -1369,39 +1320,96 @@
           'loc.addressLabel': 'Dirección:',
           'loc.mapBtn': 'Ver en Mapa',
           'prayer.title': 'Peticiones de oración',
-          'prayer.hint': 'Estamos orando por ti',
           'prayer.nameLabel': 'Nombre',
           'prayer.langLabel': 'Idioma',
           'prayer.msgLabel': 'Tu petición',
           'prayer.send': 'Enviar',
-          'prayer.note': 'Privado y respetuoso.',
-          'prayer.namePlaceholder': 'Nombre',
-          'prayer.msgPlaceholder': 'Escribe tu petición de oración...',
           'connect.title': 'Conecta',
-          'connect.hint': 'Edinburg, Texas',
           'connect.whats': 'WhatsApp',
-          'connect.whatsMeta': 'Agregar número después',
-          'connect.email': 'Correo',
-          'connect.social': 'Redes',
-          'connect.socialMeta': 'Links de Facebook / Instagram después',
-          'connect.helper':
-            'Podemos agregar un botón de “Compartir” para enviar el link del En Vivo por WhatsApp al instante.',
+          'connect.whatsMeta': 'Enviar Mensaje',
           'connect.share': 'Compartir En Vivo',
-          'footer.note':
-            'Marca independiente • Diseño propio • Contenido bilingüe',
+          'footer.note': 'Marca independiente • Contenido bilingüe',
+          'footer.credit':
+            'Diseño y Desarrollo por <strong>Ing. Santiago Martinez</strong> 💻',
+        },
+        en: {
+          'header.subtitle': 'Bilingual Christian Radio',
+          'header.location': 'Edinburg, TX',
+          'nav.live': 'Live',
+          'nav.shows': 'Shows',
+          'nav.location': 'Location',
+          'nav.prayer': 'Prayer Requests',
+          'nav.connect': 'Connect',
+          'hero.liveBadge': 'LIVE',
+          'hero.kicker': 'Cast the net in faith',
+          'hero.title': 'Word and worship, every day.',
+          'hero.subtitle':
+            'We are a bilingual Christian radio dedicated to sharing the Word of God and messages of faith.',
+          'hero.ctaLive': 'Listen Live',
+          'hero.ctaLocation': 'See Location',
+          'hero.s2.tag': 'SUNDAYS 10AM',
+          'hero.s2.mini': 'Bring your family',
+          'hero.s2.title': 'A house of open doors.',
+          'hero.s2.sub':
+            'We invite you to our in-person services at Emmanuel Temple.',
+          'hero.s2.btn': 'Get Directions',
+          'hero.s3.tag': 'NEW',
+          'hero.s3.mini': 'Take us with you',
+          'hero.s3.title': 'The radio that builds your life.',
+          'hero.s3.sub':
+            'Follow us on social media or send us a WhatsApp message to request your song.',
+          'hero.s3.btn': 'Send WhatsApp',
+          'player.status': 'LIVE',
+          'player.quality': 'Mobile Friendly',
+          'player.now': 'Ready to play',
+          'player.play': 'Play',
+          'player.pause': 'Pause',
+          'player.volume': 'Volume',
+          'player.popup': 'Open Secure Player',
+          'player.helper': 'Connected to Server (HTTPS).',
+          'shows.title': 'Shows',
+          'shows.hint': 'Schedule and hosts',
+          'shows.s0.name': 'God with Us',
+          'shows.s0.meta': 'Sunday • 10:00 AM • Pastor Daniel Ortiz',
+          'shows.tagMain': 'MAIN',
+          'shows.s1.name': 'Living Word',
+          'shows.s1.meta': 'Monday • 7:00 PM • Pastor Daniel Ortiz',
+          'shows.tagLive': 'LIVE',
+          'shows.s2.name': 'Worship Night',
+          'shows.s2.meta': 'Wednesday • 8:00 PM • Radio Emmanuel Team',
+          'shows.tagMusic': 'Worship',
+          'shows.s3.name': 'Faith & Family',
+          'shows.s3.meta': 'Friday • 6:00 PM • Special Guests',
+          'shows.tagTalk': 'Talk',
+          'loc.title': 'Schedule & Location',
+          'loc.sunday': 'Sunday',
+          'loc.worship': 'Worship',
+          'loc.wednesday': 'Wednesday',
+          'loc.prayer': 'Prayer',
+          'loc.addressLabel': 'Address:',
+          'loc.mapBtn': 'Open Map',
+          'prayer.title': 'Prayer Requests',
+          'prayer.nameLabel': 'Name',
+          'prayer.langLabel': 'Language',
+          'prayer.msgLabel': 'Your request',
+          'prayer.send': 'Send',
+          'connect.title': 'Connect',
+          'connect.whats': 'WhatsApp',
+          'connect.whatsMeta': 'Send Message',
+          'connect.share': 'Share Live Link',
+          'footer.note': 'Independent brand • Bilingual content',
+          'footer.credit':
+            'Design and Development by <strong>Ing. Santiago Martinez</strong> 💻',
         },
       };
 
-      const i18nState = { lang: 'es' };
+      let currentLang = 'es';
+
       function applyI18n(lang) {
-        i18nState.lang = lang;
+        currentLang = lang;
         document.querySelectorAll('[data-i18n]').forEach((el) => {
           const key = el.getAttribute('data-i18n');
-          if (i18n[lang][key]) el.textContent = i18n[lang][key];
-        });
-        document.querySelectorAll('[data-i18n-placeholder]').forEach((el) => {
-          const key = el.getAttribute('data-i18n-placeholder');
-          if (i18n[lang][key]) el.placeholder = i18n[lang][key];
+          if (i18n[lang][key]) el.innerHTML = i18n[lang][key]; // innerHTML para que funcionen las negritas del footer
         });
         document
           .getElementById('btnES')
@@ -1409,269 +1417,262 @@
         document
           .getElementById('btnEN')
           .classList.toggle('active', lang === 'en');
-        updateMuteIcon();
+        updateDateTime();
       }
+
       document
         .getElementById('btnES')
         .addEventListener('click', () => applyI18n('es'));
       document
         .getElementById('btnEN')
         .addEventListener('click', () => applyI18n('en'));
-      document.getElementById('year').textContent = new Date().getFullYear();
 
-      /* ========================================================
-          SCRIPT DE AUDIO + METADATOS (ICECAST)
-         ======================================================== */
+      /* =========================================
+         SCRIPT DE FECHA Y CLIMA
+         ========================================= */
+      const daysES = [
+        'Domingo',
+        'Lunes',
+        'Martes',
+        'Miércoles',
+        'Jueves',
+        'Viernes',
+        'Sábado',
+      ];
+      const daysEN = [
+        'Sunday',
+        'Monday',
+        'Tuesday',
+        'Wednesday',
+        'Thursday',
+        'Friday',
+        'Saturday',
+      ];
+
+      function updateDateTime() {
+        const now = new Date();
+        const dateEl = document.getElementById('dateDisplay');
+        const dayName =
+          currentLang === 'es' ? daysES[now.getDay()] : daysEN[now.getDay()];
+
+        const day = String(now.getDate()).padStart(2, '0');
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const year = now.getFullYear();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+
+        dateEl.innerText = `${dayName}, ${day}.${month}.${year} / ${hours}:${minutes}`;
+      }
+      setInterval(updateDateTime, 1000);
+      updateDateTime();
+
+      async function fetchWeather() {
+        try {
+          const res = await fetch(WEATHER_API);
+          const data = await res.json();
+          const temp = Math.round(data.current_weather.temperature);
+          document.getElementById('weatherDisplay').innerText = `🌤️ ${temp}°C`;
+        } catch (e) {}
+      }
+      fetchWeather();
+      setInterval(fetchWeather, 1800000);
+
+      /* =========================================
+         AUDIO, RECONEXIÓN Y LÓGICA
+         ========================================= */
       const audio = document.getElementById('radioAudio');
       const nowText = document.getElementById('nowText');
       const statusBar = document.getElementById('statusBar');
       const btnPlay = document.getElementById('btnPlay');
       const btnPause = document.getElementById('btnPause');
-      const btnMute = document.getElementById('btnMute');
-      const vol = document.getElementById('vol');
-      const popupContainer = document.getElementById('popupContainer');
-
+      const miniPlayer = document.getElementById('miniPlayer');
+      const btnMiniPlay = document.getElementById('btnMiniPlay');
       let updateInterval;
+      let retryCount = 0;
 
-      audio.volume = 1;
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 400) miniPlayer.classList.add('visible');
+        else miniPlayer.classList.remove('visible');
+      });
 
-      audio.addEventListener('loadstart', () => setStatus('buffering'));
       audio.addEventListener('playing', () => {
         setStatus('playing');
-        popupContainer.style.display = 'none';
+        retryCount = 0;
         startMetadataUpdater();
       });
-      audio.addEventListener('pause', () => {
-        setStatus('paused');
-        stopMetadataUpdater();
-      });
+
       audio.addEventListener('error', () => {
         setStatus('error');
-        popupContainer.style.display = 'block';
-      });
-
-      function setStatus(state) {
-        statusBar.className = 'bar'; // Reset clases
-        const isES = i18nState.lang === 'es';
-
-        if (state === 'buffering') {
-          statusBar.classList.add('buffering');
-          nowText.innerHTML = isES ? '📡 Conectando...' : '📡 Connecting...';
-          toggleButtons(false);
-        } else if (state === 'playing') {
-          statusBar.classList.add('live');
-          toggleButtons(true);
-        } else if (state === 'error') {
-          statusBar.classList.add('error');
-          nowText.textContent = isES ? '⚠️ Error conexión' : '⚠️ Server error';
-          toggleButtons(false);
-        } else {
-          statusBar.classList.add('idle');
-          nowText.textContent = isES ? 'Listo para escuchar' : 'Ready to play';
-          toggleButtons(false);
+        if (retryCount < 5) {
+          retryCount++;
+          nowText.innerText =
+            currentLang === 'es'
+              ? `Reconectando (${retryCount})...`
+              : `Reconnecting (${retryCount})...`;
+          setTimeout(() => {
+            audio.load();
+            audio.play();
+          }, 3000);
         }
-      }
-
-      function toggleButtons(isPlaying) {
-        if (isPlaying) {
-          btnPlay.style.display = 'none';
-          btnPause.style.display = 'inline-flex';
-        } else {
-          btnPlay.style.display = 'inline-flex';
-          btnPause.style.display = 'none';
-        }
-      }
-
-      // Volumen
-      vol.addEventListener('input', () => {
-        audio.volume = Number(vol.value);
-        if (audio.volume > 0) audio.muted = false;
-        updateMuteIcon();
       });
-      btnMute.addEventListener('click', () => {
-        audio.muted = !audio.muted;
-        updateMuteIcon();
-      });
-      function updateMuteIcon() {
-        const isMuted = audio.muted || audio.volume === 0;
-        const label = i18n[i18nState.lang]['player.volume'];
-        btnMute.innerHTML =
-          (isMuted ? '🔇 ' : '🔊 ') + `<span class="mini">${label}</span>`;
-      }
 
-      // Play / Pause
-      btnPlay.addEventListener('click', async () => {
-        popupContainer.style.display = 'none';
+      btnPlay.addEventListener('click', () => {
         setStatus('buffering');
-        audio.src = STREAM_URLS[0]; // Intenta HTTPS primero
-        try {
-          await audio.play();
-        } catch (e) {
-          console.warn('Fallo HTTPS directo, revisando...', e);
-        }
+        audio.src = STREAM_URLS[0];
+        audio.play().catch((e) => console.log('Error play', e));
       });
+
       btnPause.addEventListener('click', () => {
         audio.pause();
-        audio.src = '';
         setStatus('idle');
       });
 
-      // Dashboard Metadatos
-      function startMetadataUpdater() {
-        fetchMetadata();
-        updateInterval = setInterval(fetchMetadata, 10000);
-      }
-      function stopMetadataUpdater() {
-        clearInterval(updateInterval);
+      function setStatus(state) {
+        statusBar.className = 'bar';
+        if (state === 'buffering') {
+          statusBar.classList.add('buffering');
+          nowText.innerText =
+            currentLang === 'es' ? 'Conectando...' : 'Connecting...';
+        } else if (state === 'playing') {
+          statusBar.classList.add('live');
+          btnPlay.style.display = 'none';
+          btnPause.style.display = 'inline-flex';
+          btnMiniPlay.innerText = '⏸';
+          btnMiniPlay.onclick = () => btnPause.click();
+        } else {
+          statusBar.classList.add('idle');
+          btnPlay.style.display = 'inline-flex';
+          btnPause.style.display = 'none';
+          btnMiniPlay.innerText = '▶';
+          btnMiniPlay.onclick = () => btnPlay.click();
+        }
       }
 
       async function fetchMetadata() {
         try {
-          const res = await fetch(STATS_URL + '?t=' + new Date().getTime());
+          const res = await fetch(STATS_URL + '?t=' + Date.now());
           const data = await res.json();
-          let source = data.icestats.source;
-          if (Array.isArray(source)) {
-            source =
-              source.find((s) => s.listenurl.endsWith(MOUNT_POINT)) ||
-              source[0];
+          const source = data.icestats.source;
+          const s = Array.isArray(source) ? source[0] : source;
+          if (s) {
+            const title = s.title || 'Radio Emmanuel';
+            const label = currentLang === 'es' ? 'En línea' : 'Online';
+            nowText.innerHTML = `<strong>${title}</strong><br><small>${label}</small>`;
+            if ('mediaSession' in navigator)
+              navigator.mediaSession.metadata = new MediaMetadata({
+                title: title,
+                artist: 'Radio Emmanuel',
+              });
           }
-
-          if (source) {
-            const songTitle =
-              source.title || source.server_name || 'Radio Emmanuel';
-            const listeners = source.listeners || 0;
-            const isES = i18nState.lang === 'es';
-            const listenersLabel = isES ? 'Oyentes' : 'Listeners';
-
-            nowText.innerHTML = `
-              <div style="display:flex; flex-direction:column; gap:2px;">
-                <span style="font-size:1.1em; color:var(--text);">${songTitle}</span>
-                <span style="font-size:0.8em; opacity:0.7; font-weight:normal;">
-                  🎧 ${listenersLabel}: <strong>${listeners}</strong>
-                </span>
-              </div>
-            `;
-            document.title = `▶ ${songTitle} | Radio Emmanuel`;
-          }
-        } catch (e) {
-          console.log('Dashboard error', e);
-        }
+        } catch (e) {}
+      }
+      function startMetadataUpdater() {
+        clearInterval(updateInterval);
+        updateInterval = setInterval(fetchMetadata, 15000);
+        fetchMetadata();
       }
 
-      window.openPopupPlayer = function () {
-        // Usa la URL HTTP vieja o la que gustes para el popup
-        window.open(
-          'http://radioemmanueledinburg.radiostream321.com/',
-          'RadioPlayer',
-          'width=400,height=600',
+      const programs = [
+        { id: 'prog-sun', day: 0, hStart: 10, hEnd: 12, labelId: 'tag-sun' },
+        { id: 'prog-mon', day: 1, hStart: 19, hEnd: 21, labelId: 'tag-mon' },
+        { id: 'prog-wed', day: 3, hStart: 20, hEnd: 22, labelId: 'tag-wed' },
+        { id: 'prog-fri', day: 5, hStart: 18, hEnd: 20, labelId: 'tag-fri' },
+      ];
+      function checkSchedule() {
+        const now = new Date();
+        const day = now.getDay();
+        const hour = now.getHours();
+        programs.forEach((p) => {
+          const el = document.getElementById(p.id);
+          const tag = document.getElementById(p.labelId);
+          if (!el) return;
+          el.classList.remove('active-show');
+          tag.style.backgroundColor = '';
+          tag.innerText =
+            tag.getAttribute('data-original-text') || tag.innerText;
+          if (!tag.getAttribute('data-original-text'))
+            tag.setAttribute('data-original-text', tag.innerText);
+
+          if (day === p.day && hour >= p.hStart && hour < p.hEnd) {
+            el.classList.add('active-show');
+            tag.innerText = currentLang === 'es' ? '🔴 EN AIRE' : '🔴 ON AIR';
+            tag.style.background = 'red';
+            tag.style.color = 'white';
+            tag.style.borderColor = 'red';
+          }
+        });
+      }
+      setInterval(checkSchedule, 60000);
+      checkSchedule();
+
+      /* =========================================
+         UTILIDADES
+         ========================================= */
+      const themeBtn = document.getElementById('themeBtn');
+      if (localStorage.getItem('theme') === 'dark')
+        document.documentElement.setAttribute('data-theme', 'dark');
+      themeBtn.addEventListener('click', () => {
+        const isDark =
+          document.documentElement.getAttribute('data-theme') === 'dark';
+        document.documentElement.setAttribute(
+          'data-theme',
+          isDark ? 'light' : 'dark',
         );
-      };
+        localStorage.setItem('theme', isDark ? 'light' : 'dark');
+      });
 
       async function shareLive() {
-        const url = window.location.href.split('#')[0];
         try {
-          await navigator.share({ title: 'Radio Emmanuel', url });
+          await navigator.share({
+            title: 'Radio Emmanuel',
+            url: window.location.href,
+          });
         } catch (e) {}
       }
 
-      /* ========================================================
-          FORMULARIO DE PETICIONES (AJAX + ASUNTO PERSONALIZADO)
-         ======================================================== */
-      const prayerForm = document.getElementById('prayerForm');
-
-      prayerForm.addEventListener('submit', async function (event) {
-        event.preventDefault(); // Evita recarga
-
-        const statusText = document.getElementById('formStatus');
-        const btn = document.getElementById('btnSendPrayer');
-        const originalBtnText = btn.innerHTML;
-        const nameInput = document.getElementById('nameInput');
-
-        // 1. Preparar datos
-        const formData = new FormData(prayerForm);
-
-        // --- TRUCO: PERSONALIZAR EL ASUNTO DEL CORREO ---
-        // Agregamos un campo oculto "_subject" dinámicamente con el nombre
-        formData.append(
-          '_subject',
-          `Petición de oración de: ${nameInput.value}`,
-        );
-        // ------------------------------------------------
-
-        // 2. Estado visual "Enviando"
-        btn.disabled = true;
-        btn.innerHTML = 'Enviando...';
-        statusText.style.display = 'none';
-
-        try {
-          // USAMOS LA URL QUE DEFINISTE AL INICIO DEL SCRIPT
-          const response = await fetch(FORMSPREE_ENDPOINT, {
-            method: 'POST',
-            body: formData,
-            headers: { Accept: 'application/json' },
-          });
-
-          if (response.ok) {
-            statusText.style.color = 'var(--primary2)';
-            statusText.innerText =
-              i18nState.lang === 'es'
-                ? '¡Gracias! Hemos recibido tu petición.'
-                : 'Thank you! We received your prayer request.';
-            statusText.style.display = 'block';
-            prayerForm.reset();
-          } else {
-            throw new Error('Error envío');
+      document
+        .getElementById('prayerForm')
+        .addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const form = e.target;
+          if (form._gotcha.value) return;
+          const btn = document.getElementById('btnSendPrayer');
+          const status = document.getElementById('formStatus');
+          btn.disabled = true;
+          btn.innerText = '...';
+          const data = new FormData(form);
+          try {
+            const res = await fetch(FORMSPREE_ENDPOINT, {
+              method: 'POST',
+              body: data,
+              headers: { Accept: 'application/json' },
+            });
+            if (res.ok) {
+              status.style.display = 'block';
+              status.innerText =
+                currentLang === 'es' ? '¡Recibido!' : 'Received!';
+              form.reset();
+            }
+          } catch (e) {
+            status.innerText = 'Error.';
           }
-        } catch (error) {
-          statusText.style.color = 'var(--status-error)';
-          statusText.innerText =
-            i18nState.lang === 'es'
-              ? 'Hubo un error. Intenta de nuevo.'
-              : 'There was a problem submitting.';
-          statusText.style.display = 'block';
-        } finally {
           btn.disabled = false;
-          btn.innerHTML = originalBtnText;
-          setTimeout(() => {
-            statusText.style.display = 'none';
-          }, 6000);
-        }
-      });
+          btn.innerText = currentLang === 'es' ? 'Enviar' : 'Send';
+        });
 
-      /* ========================================================
-          SLIDER HERO
-         ======================================================== */
-      let currentSlide = 0;
+      let slideIdx = 0;
       const slides = document.querySelectorAll('.hero-slide');
       const dots = document.querySelectorAll('.h-dot');
-      const totalSlides = slides.length;
-      let slideInterval;
-
-      function goToSlide(n) {
+      function showSlide(n) {
         slides.forEach((s) => s.classList.remove('active'));
         dots.forEach((d) => d.classList.remove('active'));
-        currentSlide = (n + totalSlides) % totalSlides;
-        slides[currentSlide].classList.add('active');
-        dots[currentSlide].classList.add('active');
+        slideIdx = (n + slides.length) % slides.length;
+        slides[slideIdx].classList.add('active');
+        dots[slideIdx].classList.add('active');
       }
-      function nextSlide() {
-        goToSlide(currentSlide + 1);
-      }
-      function startSlider() {
-        slideInterval = setInterval(nextSlide, 5000);
-      }
-      function stopSlider() {
-        clearInterval(slideInterval);
-      }
+      setInterval(() => showSlide(slideIdx + 1), 5000);
 
-      if (totalSlides > 0) startSlider();
-      const sliderContainer = document.querySelector('.hero-slider-container');
-      if (sliderContainer) {
-        sliderContainer.addEventListener('mouseenter', stopSlider);
-        sliderContainer.addEventListener('mouseleave', startSlider);
-      }
-
-      updateMuteIcon();
+      document.getElementById('year').innerText = new Date().getFullYear();
     </script>
   </body>
 </html>
