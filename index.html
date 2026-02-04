@@ -295,7 +295,65 @@
         visibility: hidden;
         transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
         transform: translateY(-40%);
+
+        /* ====== FIX: Fondo del slider (IMAGEN + OVERLAY) ====== */
+        border-radius: 18px;
+        overflow: hidden;
+        padding: 22px;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
       }
+
+      /* Slides con imagen + degradado oscuro (overlay) */
+      .hero-slider-container .hero-slide:nth-of-type(1) {
+        background-image:
+          linear-gradient(
+            110deg,
+            rgba(0, 0, 0, 0.78) 0%,
+            rgba(0, 0, 0, 0.45) 55%,
+            rgba(0, 0, 0, 0.25) 100%
+          ),
+          url('https://images.unsplash.com/photo-1709846486154-f9172678be6f?auto=format&fit=crop&fm=jpg&ixlib=rb-4.1.0&q=80&w=2200');
+      }
+      .hero-slider-container .hero-slide:nth-of-type(2) {
+        background-image:
+          linear-gradient(
+            110deg,
+            rgba(0, 0, 0, 0.78) 0%,
+            rgba(0, 0, 0, 0.45) 55%,
+            rgba(0, 0, 0, 0.25) 100%
+          ),
+          url('https://images.unsplash.com/photo-1600288480699-0b0d8a456dd8?auto=format&fit=crop&fm=jpg&ixlib=rb-4.1.0&q=80&w=2200');
+      }
+      .hero-slider-container .hero-slide:nth-of-type(3) {
+        background-image:
+          linear-gradient(
+            110deg,
+            rgba(0, 0, 0, 0.78) 0%,
+            rgba(0, 0, 0, 0.45) 55%,
+            rgba(0, 0, 0, 0.25) 100%
+          ),
+          url('https://images.unsplash.com/photo-1665396697251-05a3a49515a7?auto=format&fit=crop&fm=jpg&ixlib=rb-4.1.0&q=80&w=2200');
+      }
+
+      /* Asegurar legibilidad (texto en blanco SOLO dentro del hero slider) */
+      .hero-slide h1 {
+        color: #fff;
+        text-shadow: 0 2px 18px rgba(0, 0, 0, 0.35);
+      }
+      .hero-slide .sub,
+      .hero-slide .mini,
+      .hero-slide .kicker {
+        color: rgba(255, 255, 255, 0.86);
+        text-shadow: 0 2px 14px rgba(0, 0, 0, 0.35);
+      }
+      .hero-slide .tag,
+      .hero-slide .badge {
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+      }
+
       .hero-slide.active {
         opacity: 1;
         visibility: visible;
@@ -1278,7 +1336,8 @@
           </div>
         </div>
         <div class="wrap dev-credit" data-i18n="footer.credit">
-          Diseño y Desarrollo por <strong>Ing. Santiago Martinez</strong> 💻
+          Diseño y Desarrollo por
+          <strong>Soluciones Informáticas M&M</strong> 💻
         </div>
       </footer>
     </main>
@@ -1390,8 +1449,10 @@
           'connect.whatsMeta': 'Enviar Mensaje',
           'connect.share': 'Compartir En Vivo',
           'footer.note': 'Marca independiente • Contenido bilingüe',
+
+          /* ✅ CAMBIO: crédito */
           'footer.credit':
-            'Diseño y Desarrollo por <strong>Ing. Santiago Martinez</strong> 💻',
+            'Diseño y Desarrollo por <strong>Soluciones Informáticas M&M</strong> 💻',
         },
         en: {
           'header.subtitle': 'Bilingual Christian Radio',
@@ -1459,8 +1520,10 @@
           'connect.whatsMeta': 'Send Message',
           'connect.share': 'Share Live Link',
           'footer.note': 'Independent brand • Bilingual content',
+
+          /* ✅ CAMBIO: credit traducido */
           'footer.credit':
-            'Design and Development by <strong>Ing. Santiago Martinez</strong> 💻',
+            'Design and Development by <strong>Soluciones Informáticas M&M</strong> 💻',
         },
       };
 
@@ -1492,16 +1555,14 @@
          SCRIPT DE FECHA Y TEMA (CON ICONO CORREGIDO)
          ========================================= */
       const themeBtn = document.getElementById('themeBtn');
-      // Detectar tema inicial
       const savedTheme =
         localStorage.getItem('theme') ||
         (window.matchMedia('(prefers-color-scheme: dark)').matches
           ? 'dark'
           : 'light');
 
-      // Aplicar tema inicial
       document.documentElement.setAttribute('data-theme', savedTheme);
-      themeBtn.innerText = savedTheme === 'dark' ? '☀️' : '🌙'; // Si es dark, muestra Sol. Si es light, muestra Luna.
+      themeBtn.innerText = savedTheme === 'dark' ? '☀️' : '🌙';
 
       themeBtn.addEventListener('click', () => {
         const isDark =
@@ -1510,8 +1571,6 @@
 
         document.documentElement.setAttribute('data-theme', newTheme);
         localStorage.setItem('theme', newTheme);
-
-        // Actualizar icono
         themeBtn.innerText = newTheme === 'dark' ? '☀️' : '🌙';
       });
 
@@ -1544,14 +1603,12 @@
         const month = String(now.getMonth() + 1).padStart(2, '0');
         const year = now.getFullYear();
 
-        // LOGICA DE 12 HORAS (AM/PM)
         let hours = now.getHours();
         const minutes = String(now.getMinutes()).padStart(2, '0');
         const ampm = hours >= 12 ? 'PM' : 'AM';
         hours = hours % 12;
-        hours = hours ? hours : 12; // La hora '0' debe ser '12'
+        hours = hours ? hours : 12;
 
-        // FORMATO FECHA (ES: DD.MM.YYYY | EN: MM.DD.YYYY)
         let dateString =
           currentLang === 'en'
             ? `${month}.${day}.${year}`
@@ -1750,7 +1807,9 @@
         slides[slideIdx].classList.add('active');
         dots[slideIdx].classList.add('active');
       }
-      setInterval(() => showSlide(slideIdx + 1), 5000);
+
+      /* ✅ CAMBIO: más lento (antes 5000) */
+      setInterval(() => showSlide(slideIdx + 1), 9000);
 
       document.getElementById('year').innerText = new Date().getFullYear();
     </script>
