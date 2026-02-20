@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard | Radio Emmanuel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="min-h-screen bg-slate-950 text-white">
+    <div class="max-w-5xl mx-auto p-6 space-y-6">
+      <div class="flex items-center justify-between">
+        <h1 class="text-2xl md:text-3xl font-black">
+          Dashboard (Editor de contenido)
+        </h1>
+        <a href="../index.html" class="text-sky-400 hover:underline"
+          >Ver sitio</a
+        >
+      </div>
+
+      <div class="bg-white/5 border border-white/10 rounded-2xl p-5">
+        <p class="text-slate-300 text-sm">
+          Edita aquí y luego presiona <b>Descargar content.json</b>. Después
+          súbelo a <code>/data/content.json</code> en tu hosting.
+        </p>
+        <p class="text-amber-300 text-xs mt-2">
+          Nota: esto NO es seguridad real. Para proteger el dashboard de verdad
+          se requiere backend o un CMS.
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-4">
+        <div
+          class="bg-white/5 border border-white/10 rounded-2xl p-5 space-y-3"
+        >
+          <h2 class="font-black text-lg">Marca</h2>
+          <label class="text-xs text-slate-400">Nombre</label>
+          <input
+            id="brandName"
+            class="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2"
+          />
+          <label class="text-xs text-slate-400">Tag</label>
+          <input
+            id="brandTag"
+            class="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2"
+          />
+          <label class="text-xs text-slate-400">URL Botón App</label>
+          <input
+            id="appButtonUrl"
+            class="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2"
+          />
+        </div>
+
+        <div
+          class="bg-white/5 border border-white/10 rounded-2xl p-5 space-y-3"
+        >
+          <h2 class="font-black text-lg">Streaming</h2>
+          <label class="text-xs text-slate-400">Stream URL</label>
+          <input
+            id="streamUrl"
+            class="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2"
+          />
+          <label class="text-xs text-slate-400">API NowPlaying URL</label>
+          <input
+            id="apiUrl"
+            class="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2"
+          />
+        </div>
+      </div>
+
+      <div class="bg-white/5 border border-white/10 rounded-2xl p-5 space-y-3">
+        <h2 class="font-black text-lg">Hero</h2>
+        <label class="text-xs text-slate-400">Título (HTML permitido)</label>
+        <textarea
+          id="heroTitleHtml"
+          rows="3"
+          class="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2"
+        ></textarea>
+        <label class="text-xs text-slate-400">Subtítulo</label>
+        <input
+          id="heroSubtitle"
+          class="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2"
+        />
+      </div>
+
+      <div class="bg-white/5 border border-white/10 rounded-2xl p-5 space-y-3">
+        <h2 class="font-black text-lg">Slider (3)</h2>
+        <div id="sliderEditor" class="grid md:grid-cols-3 gap-3"></div>
+      </div>
+
+      <div class="bg-white/5 border border-white/10 rounded-2xl p-5 space-y-3">
+        <h2 class="font-black text-lg">Programación (cards)</h2>
+        <div id="scheduleEditor" class="grid md:grid-cols-3 gap-3"></div>
+        <p class="text-xs text-slate-400">
+          <b>highlightWhen</b>: usa <code>weekday</code> o
+          <code>monday</code> (para resaltar según el día).
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-4">
+        <div
+          class="bg-white/5 border border-white/10 rounded-2xl p-5 space-y-3"
+        >
+          <h2 class="font-black text-lg">Oración</h2>
+          <label class="text-xs text-slate-400"
+            >WhatsApp number (solo números)</label
+          >
+          <input
+            id="whatsappNumber"
+            class="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2"
+          />
+          <label class="text-xs text-slate-400">Título (HTML)</label>
+          <textarea
+            id="prayerTitleHtml"
+            rows="2"
+            class="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2"
+          ></textarea>
+          <label class="text-xs text-slate-400">Subtítulo</label>
+          <input
+            id="prayerSubtitle"
+            class="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2"
+          />
+          <label class="text-xs text-slate-400">Hint formulario</label>
+          <input
+            id="prayerFormHint"
+            class="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2"
+          />
+        </div>
+
+        <div
+          class="bg-white/5 border border-white/10 rounded-2xl p-5 space-y-3"
+        >
+          <h2 class="font-black text-lg">Footer / Redes</h2>
+          <label class="text-xs text-slate-400">Ubicación</label>
+          <input
+            id="location"
+            class="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2"
+          />
+          <label class="text-xs text-slate-400">Facebook URL</label>
+          <input
+            id="facebookUrl"
+            class="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2"
+          />
+          <label class="text-xs text-slate-400">Instagram URL</label>
+          <input
+            id="instagramUrl"
+            class="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2"
+          />
+        </div>
+      </div>
+
+      <div class="flex flex-wrap gap-3">
+        <button
+          id="loadBtn"
+          class="bg-white/10 hover:bg-white/15 border border-white/10 rounded-xl px-4 py-2 font-bold"
+        >
+          Cargar content.json actual
+        </button>
+        <button
+          id="downloadBtn"
+          class="bg-sky-600 hover:bg-sky-500 rounded-xl px-4 py-2 font-black"
+        >
+          Descargar content.json
+        </button>
+      </div>
+
+      <pre id="status" class="text-xs text-slate-400"></pre>
+    </div>
+
+    <script src="admin.js"></script>
+  </body>
+</html>
